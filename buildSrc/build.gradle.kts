@@ -8,6 +8,8 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.22")
-    implementation("org.gradle.kotlin:gradle-kotlin-dsl-plugins:4.0.15")
+    implementation(libs.kotlin.stdlib.jdk8)
+    implementation(libs.kotlin.reflect)
+    implementation(libs.kotlin.gradle.plugin)
+    implementation(libs.gradle.kotlin.dsl.plugins)
 }
