@@ -12,8 +12,10 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.kotlin.stdlib.jdk8)
-    testImplementation(libs.kotest.assertions.core)
+    api(project(":kompdb-core"))
+    implementation(libs.google.gson)
+    testApi(libs.kotest.assertions.core)
+    testApi(libs.kotest.assertions.json)
 }
 
 java {
