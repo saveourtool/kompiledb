@@ -87,17 +87,6 @@ jobs:
             **/build/test-results/*/TEST-*.xml
           retention-days: 1
 
-      - name: 'Publish a snapshot (Java 17 only)'
-        id: publish
-        if: ${{ github.event_name == 'push' && github.ref_type == 'branch' && github.ref == 'refs/heads/master' && matrix.java-version == 17 }}
-        uses: gradle/gradle-build-action@v2
-        with:
-          gradle-version: wrapper
-          arguments: |
-            publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   report:
     name: 'Publish JUnit test results (Java ${{ matrix.java-version }})'
     if: ${{ always() }}
