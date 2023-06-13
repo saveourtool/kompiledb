@@ -1,4 +1,4 @@
-rootProject.name = "kompdb"
+rootProject.name = "kompiledb"
 
 pluginManagement {
     repositories {
@@ -11,8 +11,8 @@ plugins {
     id("com.gradle.enterprise") version "3.13.3"
 }
 
-include("kompdb-core")
-include("kompdb-gson")
+include("kompiledb-core")
+include("kompiledb-gson")
 
 gradleEnterprise {
     if (System.getenv("CI") != null) {
