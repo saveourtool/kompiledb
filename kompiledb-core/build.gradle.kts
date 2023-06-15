@@ -4,6 +4,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    `java-test-fixtures`
     kotlin("jvm")
 }
 
@@ -13,7 +14,8 @@ repositories {
 
 dependencies {
     api(libs.kotlin.stdlib.jdk8)
-    testApi(libs.kotest.assertions.core)
+    testFixturesApi(libs.kotest.assertions.core)
+    testFixturesApi(libs.kotest.assertions.json)
 }
 
 java {

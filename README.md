@@ -128,7 +128,7 @@ Example input:
 Running the file through the following filter:
 
 ```bash
-jq '.compilation_unit | map(.file = .file[0] | .output = .object[0] | del(.compiler, .id, .language, .timestamp, .original_command_id, .uuid, .head_include, .preprocess_file, .object)) | del(..|nulls)' <example.json >compile_commands.json
+jq '.compilation_unit | map(.file = .file[0] | .output = .object[0] | del(.compiler, .id, .language, .timestamp, .original_command_id, .uuid, .head_include, .preprocess_file, .preprocess_status, .object)) | del(..|nulls)' <example.json >compile_commands.json
 ```
 
 &mdash; will result in the `compile_commands.json` of the following content:

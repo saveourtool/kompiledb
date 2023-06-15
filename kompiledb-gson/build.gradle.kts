@@ -14,8 +14,7 @@ repositories {
 dependencies {
     api(project(":kompiledb-core"))
     implementation(libs.google.gson)
-    testApi(libs.kotest.assertions.core)
-    testApi(libs.kotest.assertions.json)
+    testImplementation(testFixtures(project(":kompiledb-core")))
 }
 
 java {
