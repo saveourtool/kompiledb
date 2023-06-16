@@ -2,11 +2,13 @@ package com.saveourtool.kompiledb.gson
 
 import com.saveourtool.kompiledb.core.CompilationCommand
 import com.saveourtool.kompiledb.core.CompilationDatabase
+import com.saveourtool.kompiledb.core.EnvPath
 import com.saveourtool.kompiledb.core.JsonIo
 import com.saveourtool.kompiledb.core.gson
 import com.google.gson.JsonSyntaxException
 import io.kotest.assertions.json.shouldBeEmptyJsonArray
 import io.kotest.assertions.json.shouldEqualJson
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.equals.shouldBeEqual
@@ -15,8 +17,11 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.result.shouldBeFailure
 import io.kotest.matchers.result.shouldBeSuccess
 import org.intellij.lang.annotations.Language
+import org.junit.jupiter.api.io.TempDir
+import java.io.IOException
+import java.nio.file.Path
+import kotlin.io.path.div
 import kotlin.test.Test
-import com.saveourtool.kompiledb.core.EnvPath as Path
 
 /**
  * @see CompilationDatabase
@@ -28,8 +33,8 @@ class CompilationDatabaseGsonTest {
 
     @Test
     fun `simple database should serialize successfully`() {
-        val command0 = CompilationCommand(Path(""), Path("file1.c"), listOf("gcc", "-c", "file1.c"))
-        val command1 = CompilationCommand(Path(""), Path("file2.c"), listOf("gcc", "-c", "file2.c"))
+        val command0 = CompilationCommand(EnvPath(""), EnvPath("file1.c"), listOf("gcc", "-c", "file1.c"))
+        val command1 = CompilationCommand(EnvPath(""), EnvPath("file2.c"), listOf("gcc", "-c", "file2.c"))
 
         val database = CompilationDatabase(command0, command1)
 
@@ -148,5 +153,31 @@ class CompilationDatabaseGsonTest {
                 "Either `arguments` or `command` is required"
         database.errors[2].shouldNotBeNull() shouldBeEqual
                 """Expected `arguments[1]` to be a string but was a JsonPrimitive: {"directory":"C:/Users/alice/cmake-3.26.4/Source","file":"C:/Users/alice/cmake-3.26.4/Source/cmFileAPIToolchains.cxx","arguments":["/C/Program_Files/msys64/mingw64/bin/g++.exe",41,42,null],"output":"Source/CMakeFiles/CMakeLib.dir/cmFileAPIToolchains.cxx.obj"}"""
+    }
+
+    /**
+     * An attempt to read a database from a non-regular or an inaccessible file
+     * should result in an I/O exception.
+     */
+    @Test
+    fun `i-o error when reading a non-regular file`(@TempDir projectDirectory: Path) {
+        shouldThrow<IOException> {
+            with(jsonIo) {
+                projectDirectory.readCompilationDatabase()
+            }
+        }
+    }
+
+    /**
+     * An attempt to read a database from a nonexistent file should result in an
+     * I/O exception.
+     */
+    @Test
+    fun `i-o error when reading a missing file`(@TempDir projectDirectory: Path) {
+        shouldThrow<IOException> {
+            with(jsonIo) {
+                (projectDirectory / "compile_commands.json").readCompilationDatabase()
+            }
+        }
     }
 }
