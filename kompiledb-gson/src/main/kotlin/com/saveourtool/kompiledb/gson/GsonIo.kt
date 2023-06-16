@@ -5,9 +5,13 @@ import com.saveourtool.kompiledb.core.CompilationDatabase
 import com.saveourtool.kompiledb.core.JsonIo
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonSyntaxException
+import java.io.IOException
 import java.io.Reader
 import java.nio.charset.Charset
 import java.nio.file.Path
+import kotlin.Result.Companion.failure
+import kotlin.Result.Companion.success
 import kotlin.io.path.bufferedReader
 
 internal class GsonIo(init: GsonBuilder.() -> Unit) : JsonIo {
@@ -35,8 +39,15 @@ internal class GsonIo(init: GsonBuilder.() -> Unit) : JsonIo {
         }
 
     override fun Reader.readCompilationDatabase(): Result<CompilationDatabase> =
-        runCatching {
-            gson.fromJson(this, CompilationDatabase::class.java)
+        try {
+            success(gson.fromJson(this, CompilationDatabase::class.java))
+        } catch (ioe: IOException) {
+            throw ioe
+        } catch (jse: JsonSyntaxException) {
+            when (val cause = jse.cause) {
+                is IOException -> throw cause
+                else -> failure(jse)
+            }
         }
 
     override fun Path.readCompilationDatabase(charset: Charset): Result<CompilationDatabase> =
