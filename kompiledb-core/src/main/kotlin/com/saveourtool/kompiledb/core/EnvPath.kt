@@ -1,6 +1,6 @@
 package com.saveourtool.kompiledb.core
 
-import java.nio.file.InvalidPathException
+import com.saveourtool.kompiledb.core.io.PathMapper
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.pathString
@@ -8,17 +8,15 @@ import kotlin.io.path.pathString
 /**
  * The path in the target build environment.
  *
+ * Use [PathMapper] to convert this path to a local [Path].
+ *
  * @param path the string representation of this path.
+ * @see PathMapper
  */
 @JvmInline
 value class EnvPath(val path: String) {
     constructor(path: Path) : this(path.pathString)
 
-    /**
-     * @return this path as a local `Path` instance.
-     * @throws InvalidPathException if the path string cannot be converted to a
-     *   `Path`.
-     */
-    fun toLocalPath(): Path =
-        Path(path)
+    override fun toString(): String =
+        path
 }
