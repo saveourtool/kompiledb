@@ -10,13 +10,13 @@ import kotlin.io.path.pathString
  *
  * Use [PathMapper] to convert this path to a local [Path].
  *
- * @param path the string representation of this path.
+ * @param pathString the string representation of this path.
  * @see PathMapper
  */
 @JvmInline
-value class EnvPath(val path: String) {
+value class EnvPath(val pathString: String) {
     constructor(path: Path) : this(path.pathString)
 
     override fun toString(): String =
-        path
+        pathString
 }

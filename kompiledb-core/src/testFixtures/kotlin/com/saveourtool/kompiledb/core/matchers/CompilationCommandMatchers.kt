@@ -85,4 +85,4 @@ private fun formatString(s: String?): String =
     }
 
 private fun formatPath(path: EnvPath?): String =
-    formatString(path?.path)
+    formatString(path?.pathString)
