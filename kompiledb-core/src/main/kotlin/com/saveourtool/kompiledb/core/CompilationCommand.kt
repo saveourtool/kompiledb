@@ -1,5 +1,7 @@
 package com.saveourtool.kompiledb.core
 
+import com.saveourtool.kompiledb.core.io.ParsedArgs
+import com.saveourtool.kompiledb.core.io.RawCommandLine
 import org.intellij.lang.annotations.Language
 
 /**
@@ -54,7 +56,7 @@ data class CompilationCommand(
      * be the executable name, such as `clang++`. Arguments should not be
      * escaped, but ready to pass to `execvp()`.
      */
-    val arguments: List<String>,
+    val arguments: ParsedArgs,
 
     /**
      * The compile command executed. After JSON unescaping, this must be a valid
@@ -64,7 +66,7 @@ data class CompilationCommand(
      * characters. Shell expansion is not supported.
      */
     @Language("sh")
-    val command: String? = null,
+    val command: RawCommandLine? = null,
 
     /**
      * The name of the output created by this compilation step. This field is
@@ -80,7 +82,7 @@ data class CompilationCommand(
     constructor(
         directory: EnvPath,
         file: EnvPath,
-        arguments: List<String>,
+        arguments: ParsedArgs,
         output: EnvPath? = null,
     ) : this(
         directory,
@@ -96,7 +98,7 @@ data class CompilationCommand(
     constructor(
         directory: EnvPath,
         file: EnvPath,
-        @Language("sh") command: String,
+        @Language("sh") command: RawCommandLine,
         output: EnvPath? = null,
     ) : this(
         directory,
@@ -110,7 +112,7 @@ data class CompilationCommand(
         require(arguments.isNotEmpty() || !command.isNullOrBlank()) {
             "Either `arguments` or `command` is required"
         }
-        require(file.path.isNotBlank()) {
+        require(file.pathString.isNotBlank()) {
             "`file` shouldn't be blank"
         }
     }
