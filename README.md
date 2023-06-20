@@ -8,6 +8,20 @@ _Kotlin_ bindings to [_JSON Compilation Database_](http://clang.llvm.org/docs/JS
 
 This library is inspired by tools such as [nickdiego/compiledb](https://github.com/nickdiego/compiledb) and [rizsotto/Bear](https://github.com/rizsotto/Bear).
 
+## Features
+
+ - Can read and write `compile_commands.json`.
+ - No dependencies (except for [google/gson](https://github.com/google/gson)).
+   The core library is JSON engine agnostic, so it's easy to add support for a
+   different JSON back-end, such as [FasterXML/jackson](https://github.com/FasterXML/jackson)
+   or [Kotlin/kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization).
+ - Support for pluggable path translation between the local and the build
+   environments (such as [_Cygwin_](https://www.cygwin.com) or
+   [_WSL_](https://github.com/Microsoft/WSL)).
+   Built-in path mapper for [_MSys_](https://www.msys2.org).
+ - Command-line parser for _GCC_ and compatibles, such as _Clang_:
+   + [response file](https://gcc.gnu.org/wiki/Response_Files) expansion.
+
 ## Other JSON formats
 
 If your build system produces a JSON different from the compilation database

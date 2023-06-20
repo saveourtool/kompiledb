@@ -2,6 +2,7 @@ package com.saveourtool.kompiledb.gson
 
 import com.saveourtool.kompiledb.core.CompilationCommand
 import com.saveourtool.kompiledb.core.CompilationDatabase
+import com.saveourtool.kompiledb.core.CompilationDatabase.Companion.COMPILE_COMMANDS_JSON
 import com.saveourtool.kompiledb.core.EnvPath
 import com.saveourtool.kompiledb.core.JsonIo
 import com.saveourtool.kompiledb.core.gson
@@ -176,7 +177,7 @@ class CompilationDatabaseGsonTest {
     fun `i-o error when reading a missing file`(@TempDir projectDirectory: Path) {
         shouldThrow<IOException> {
             with(jsonIo) {
-                (projectDirectory / "compile_commands.json").readCompilationDatabase()
+                (projectDirectory / COMPILE_COMMANDS_JSON).readCompilationDatabase()
             }
         }
     }

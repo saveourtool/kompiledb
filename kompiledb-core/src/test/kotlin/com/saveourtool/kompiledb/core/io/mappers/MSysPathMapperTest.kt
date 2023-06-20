@@ -1,6 +1,7 @@
-package com.saveourtool.kompiledb.core.io
+package com.saveourtool.kompiledb.core.io.mappers
 
 import com.saveourtool.kompiledb.core.EnvPath
+import com.saveourtool.kompiledb.core.io.PathMapper
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeIn

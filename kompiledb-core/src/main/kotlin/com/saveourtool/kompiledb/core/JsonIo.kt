@@ -55,7 +55,11 @@ interface JsonIo {
 
     /**
      * Reads the content of a JSON file as a compilation database.
+     * If the receiver is a directory, an attempt is made to read the content of
+     * its child named `compile_commands.json`.
      *
+     * @receiver either the compilation database JSON file, or a directory which
+     *   contains a `compile_commands.json` file.
      * @return either a compilation database, or a JSON syntax error.
      * @throws IOException in case an I/O error occurs while reading a file.
      */
