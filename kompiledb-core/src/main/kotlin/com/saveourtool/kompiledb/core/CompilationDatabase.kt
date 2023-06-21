@@ -15,4 +15,11 @@ data class CompilationDatabase(
      * @param commands the list of compilation commands.
      */
     constructor(vararg commands: CompilationCommand) : this(commands.toList())
+
+    companion object {
+        /**
+         * The default name of the JSON database file.
+         */
+        const val COMPILE_COMMANDS_JSON = "compile_commands.json"
+    }
 }

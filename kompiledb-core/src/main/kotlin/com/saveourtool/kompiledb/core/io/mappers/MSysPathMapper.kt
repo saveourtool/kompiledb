@@ -1,6 +1,7 @@
-package com.saveourtool.kompiledb.core.io
+package com.saveourtool.kompiledb.core.io.mappers
 
 import com.saveourtool.kompiledb.core.EnvPath
+import com.saveourtool.kompiledb.core.io.PathMapper
 import java.io.IOException
 import java.nio.file.Path
 import kotlin.io.path.Path

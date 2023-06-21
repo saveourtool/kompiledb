@@ -2,6 +2,7 @@ package com.saveourtool.kompiledb.gson
 
 import com.saveourtool.kompiledb.core.CompilationCommand
 import com.saveourtool.kompiledb.core.CompilationDatabase
+import com.saveourtool.kompiledb.core.CompilationDatabase.Companion.COMPILE_COMMANDS_JSON
 import com.saveourtool.kompiledb.core.JsonIo
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -13,6 +14,9 @@ import java.nio.file.Path
 import kotlin.Result.Companion.failure
 import kotlin.Result.Companion.success
 import kotlin.io.path.bufferedReader
+import kotlin.io.path.div
+import kotlin.io.path.isDirectory
+import kotlin.io.path.name
 
 internal class GsonIo(init: GsonBuilder.() -> Unit) : JsonIo {
     private val gson: Gson = GsonBuilder()
@@ -51,7 +55,11 @@ internal class GsonIo(init: GsonBuilder.() -> Unit) : JsonIo {
         }
 
     override fun Path.readCompilationDatabase(charset: Charset): Result<CompilationDatabase> =
-        bufferedReader(charset).use { reader ->
-            reader.readCompilationDatabase()
+        when {
+            isDirectory() && name != COMPILE_COMMANDS_JSON -> (this / COMPILE_COMMANDS_JSON).readCompilationDatabase(charset)
+
+            else -> bufferedReader(charset).use { reader ->
+                reader.readCompilationDatabase()
+            }
         }
 }

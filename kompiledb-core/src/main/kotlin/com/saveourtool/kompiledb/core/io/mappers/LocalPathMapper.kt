@@ -1,7 +1,8 @@
-package com.saveourtool.kompiledb.core.io
+package com.saveourtool.kompiledb.core.io.mappers
 
 import com.saveourtool.kompiledb.core.EnvPath
-import java.io.File.pathSeparatorChar
+import com.saveourtool.kompiledb.core.io.PathMapper
+import java.io.File.separatorChar
 import java.nio.file.InvalidPathException
 import java.nio.file.Path
 import kotlin.io.path.Path
@@ -14,7 +15,7 @@ import kotlin.io.path.pathString
 object LocalPathMapper : PathMapper {
     override val fileSeparator: Char
         get() =
-            pathSeparatorChar
+            separatorChar
 
     override val EnvPath.isAbsolute: Boolean
         get() =
