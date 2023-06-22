@@ -20,7 +20,8 @@ This library is inspired by tools such as [nickdiego/compiledb](https://github.c
    [_WSL_](https://github.com/Microsoft/WSL)).
    Built-in path mapper for [_MSys_](https://www.msys2.org).
  - Command-line parser for _GCC_ and compatibles, such as _Clang_:
-   + [response file](https://gcc.gnu.org/wiki/Response_Files) expansion.
+   + [response file](https://gcc.gnu.org/wiki/Response_Files) expansion;
+   + support for 'single'- and "double"-quoted arguments (also within response files).
 
 ## Other JSON formats
 

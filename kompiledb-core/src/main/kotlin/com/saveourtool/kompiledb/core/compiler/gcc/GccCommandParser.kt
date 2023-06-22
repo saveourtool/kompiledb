@@ -92,11 +92,14 @@ internal class GccCommandParser(
                 return failure(error)
             }
 
-            /*
+            /*-
              * Parse the content of the response file with the command-line
              * parser passed as a constructor argument.
+             *
+             * The `trimEnd()` call is necessary, because the command may still
+             * contain the trailing newline sequence.
              */
-            this(resolved.readText()).asSequence()
+            this(resolved.readText().trimEnd()).asSequence()
         }
 
     private companion object {
