@@ -119,9 +119,9 @@ abstract class AbstractComandLineParser(
         /**
          * Whitespace which is not a newline.
          */
-        private val SHELL_WHITESPACE_CHARS: Array<out Char> = arrayOf(SPACE, TAB, FORM_FEED)
+        private val SHELL_WHITESPACE_CHARS = charArrayOf(SPACE, TAB, FORM_FEED)
 
-        private val NEWLINE_CHARS: Array<out Char> = arrayOf('\r', '\n')
+        private val NEWLINE_CHARS = charArrayOf('\r', '\n')
 
         private val Char.isShellWhitespace: Boolean
             get() =
