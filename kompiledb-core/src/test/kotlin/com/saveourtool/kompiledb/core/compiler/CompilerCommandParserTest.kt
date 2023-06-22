@@ -96,7 +96,7 @@ class CompilerCommandParserTest {
         val parsedCommand= CompilerCommandParser().parse(projectDir, command)
 
         parsedCommand.errors shouldHaveSize 1
-        parsedCommand.errors[0].shouldStartWith("No such file: ")
+        parsedCommand.errors[0] shouldStartWith "No such file: "
 
         parsedCommand.arguments.shouldContainInOrder(
             "gcc",
