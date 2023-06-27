@@ -80,8 +80,6 @@ internal class GccCommandParser(
                 EnvPath.EMPTY
             }
 
-        var expectingDefinedMacro = false
-        var expectingUndefinedMacro = false
         val includePaths = mutableMapOf<String, MutableList<EnvPath>>()
         val definedMacros = mutableMapOf<String, String>()
         val undefinedMacros = mutableListOf<String>()
@@ -89,53 +87,8 @@ internal class GccCommandParser(
         val ignoredArguments = arguments.asSequence()
             .drop(1)
             .collectIncludePathsTo(includePaths)
-            .filter { argument ->
-                when {
-                    expectingDefinedMacro -> {
-                        val (name, value) = argument.splitToNameAndValue()
-                        definedMacros[name] = value
-                        expectingDefinedMacro = false
-                        false
-
-                    }
-
-                    expectingUndefinedMacro -> {
-                        undefinedMacros += argument
-                        expectingUndefinedMacro = false
-                        false
-                    }
-
-                    /*
-                     * -D
-                     */
-                    argument.isDefineMacroSwitch -> {
-                        when (val definedMacro = argument.definedMacroOrNull()) {
-                            null -> expectingDefinedMacro = true
-                            else -> {
-                                val (name, value) = definedMacro.splitToNameAndValue()
-                                definedMacros[name] = value
-                            }
-                        }
-                        false
-                    }
-
-                    /*
-                     * -U
-                     */
-                    argument.isUndefineMacroSwitch -> {
-                        when (val undefinedMacro = argument.undefinedMacroOrNull()) {
-                            null -> expectingUndefinedMacro = true
-                            else -> undefinedMacros += undefinedMacro
-                        }
-                        false
-                    }
-
-                    /*
-                     * Neither an include path nor `-D`/`-U`.
-                     */
-                    else -> true
-                }
-            }
+            .collectDefinedMacrosTo(definedMacros)
+            .collectUndefinedMacrosTo(undefinedMacros)
             .toList()
 
         return ParsedCompilerCommand(
@@ -277,7 +230,69 @@ internal class GccCommandParser(
                         }
 
                         /*
-                         * Not an include path.
+                         * Not an include path, pass through.
+                         */
+                        else -> yield(argument)
+                    }
+                }
+            }
+
+        private fun Sequence<Arg>.collectDefinedMacrosTo(definedMacros: MutableMap<String, String>): Sequence<Arg> =
+            sequence {
+                var expectingDefinedMacro = false
+
+                forEach { argument ->
+                    when {
+                        expectingDefinedMacro -> {
+                            val (name, value) = argument.splitToNameAndValue()
+                            definedMacros[name] = value
+                            expectingDefinedMacro = false
+                        }
+
+                        /*
+                         * -D
+                         */
+                        argument.isDefineMacroSwitch -> {
+                            when (val definedMacro = argument.definedMacroOrNull()) {
+                                null -> expectingDefinedMacro = true
+                                else -> {
+                                    val (name, value) = definedMacro.splitToNameAndValue()
+                                    definedMacros[name] = value
+                                }
+                            }
+                        }
+
+                        /*
+                         * Not a `-D`, pass through.
+                         */
+                        else -> yield(argument)
+                    }
+                }
+            }
+
+        private fun Sequence<Arg>.collectUndefinedMacrosTo(undefinedMacros: MutableList<String>): Sequence<Arg> =
+            sequence {
+                var expectingUndefinedMacro = false
+
+                forEach { argument ->
+                    when {
+                        expectingUndefinedMacro -> {
+                            undefinedMacros += argument
+                            expectingUndefinedMacro = false
+                        }
+
+                        /*
+                         * -U
+                         */
+                        argument.isUndefineMacroSwitch -> {
+                            when (val undefinedMacro = argument.undefinedMacroOrNull()) {
+                                null -> expectingUndefinedMacro = true
+                                else -> undefinedMacros += undefinedMacro
+                            }
+                        }
+
+                        /*
+                         * Not a `-U`, pass through.
                          */
                         else -> yield(argument)
                     }
@@ -347,9 +362,10 @@ internal class GccCommandParser(
                 else -> substring(0, index) to substring(index + 1)
             }
 
-        private fun String.nullIfEmpty(): String? = when {
-            isEmpty() -> null
-            else -> this
-        }
+        private fun String.nullIfEmpty(): String? =
+            when {
+                isEmpty() -> null
+                else -> this
+            }
     }
 }
