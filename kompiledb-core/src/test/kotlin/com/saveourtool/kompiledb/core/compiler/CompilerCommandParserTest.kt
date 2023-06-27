@@ -171,6 +171,70 @@ class CompilerCommandParserTest {
     }
 
     @Test
+    fun `include directories (quoted)`(@TempDir projectRoot: Path) {
+        val sourceDir = (projectRoot / "src").createDirectories()
+
+        val command = CompilationCommand(
+            directory = EnvPath(pathString = "./${sourceDir.name}/"),
+            file = EnvPath("file.c"),
+            command = """gcc -I"subdir1" -I "subdir2" "-Isubdir3" -c file.c -o file.o""",
+            output = EnvPath("file.o")
+        )
+
+        val parsedCommand = CompilerCommandParser().parse(projectRoot, command)
+
+        val flattenedIncludePaths = parsedCommand.includePaths()
+            .asSequence()
+            .flatMap { includePaths ->
+                includePaths.value.asSequence()
+            }
+            .toList()
+
+        flattenedIncludePaths
+            .asSequence()
+            .map { includePath ->
+                includePath.relativeTo(sourceDir)
+            }
+            .map(Path::pathString)
+            .toList()
+            .shouldContainExactlyInAnyOrder(
+                "subdir1",
+                "subdir2",
+                "subdir3",
+            )
+    }
+
+    @Test
+    fun `empty quoted include directory should be preserved`(@TempDir projectRoot: Path) {
+        val sourceDir = (projectRoot / "src").createDirectories()
+
+        val command = CompilationCommand(
+            directory = EnvPath(pathString = "./${sourceDir.name}/"),
+            file = EnvPath("file.c"),
+            command = """gcc -I "" -c file.c -o file.o""",
+            output = EnvPath("file.o")
+        )
+
+        val parsedCommand = CompilerCommandParser().parse(projectRoot, command)
+
+        val flattenedIncludePaths = parsedCommand.includePaths()
+            .asSequence()
+            .flatMap { includePaths ->
+                includePaths.value.asSequence()
+            }
+            .toList()
+
+        flattenedIncludePaths
+            .asSequence()
+            .map { includePath ->
+                includePath.relativeTo(sourceDir)
+            }
+            .map(Path::pathString)
+            .toList()
+            .shouldContainExactly("")
+    }
+
+    @Test
     fun `include files`(@TempDir projectRoot: Path) {
         val sourceDir = (projectRoot / "src").createDirectories()
 
