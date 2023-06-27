@@ -181,8 +181,8 @@ class CompilerCommandParserTest {
                 "gcc",
                 "-includefile1.h",
                 "-imacrosfile2.h",
-                "-include", "file3.h",
-                "-imacros", "file4.h",
+                "-include", "./file3.h",
+                "-imacros", "../src/./file4.h",
                 "-c",
                 "file.c",
                 "-o",
@@ -217,15 +217,15 @@ class CompilerCommandParserTest {
                 includePath.normalize() shouldBeEqual includePath
             }
             .map { includePath ->
-                includePath.relativeTo(projectRoot)
+                includePath.relativeTo(sourceDir)
             }
             .map(Path::pathString)
             .toList()
             .shouldContainExactlyInAnyOrder(
-                "src${separatorChar}file1.h",
-                "src${separatorChar}file2.h",
-                "src${separatorChar}file3.h",
-                "src${separatorChar}file4.h",
+                "file1.h",
+                "file2.h",
+                "file3.h",
+                "file4.h",
             )
     }
 }
