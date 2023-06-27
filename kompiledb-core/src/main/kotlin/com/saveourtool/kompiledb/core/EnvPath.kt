@@ -25,4 +25,9 @@ value class EnvPath(val pathString: String) {
 
     override fun toString(): String =
         pathString
+
+    companion object {
+        @JvmStatic
+        val EMPTY: EnvPath = EnvPath("")
+    }
 }

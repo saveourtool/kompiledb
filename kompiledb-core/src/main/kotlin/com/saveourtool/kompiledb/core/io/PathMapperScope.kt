@@ -29,7 +29,7 @@ interface PathMapperScope {
      * @return the resulting path.
      */
     @Contract(pure = true)
-    fun EnvPath.resolve(other: EnvPath): EnvPath =
+    infix fun EnvPath.resolve(other: EnvPath): EnvPath =
         with(pathMapper) {
             when {
                 other.isEmpty -> this@resolve
@@ -52,7 +52,7 @@ interface PathMapperScope {
      * @return the resulting path.
      */
     @Contract(pure = true)
-    fun Path.resolve(other: EnvPath): Result<Path> =
+    infix fun Path.resolve(other: EnvPath): Result<Path> =
         with(pathMapper) {
             when {
                 other.isEmpty -> this@resolve
@@ -74,7 +74,7 @@ interface PathMapperScope {
      */
     @Contract(pure = true)
     operator fun EnvPath.div(other: EnvPath): EnvPath =
-        resolve(other)
+        this resolve other
 
     /**
      * Resolves the given [other] path against this path.
@@ -84,5 +84,28 @@ interface PathMapperScope {
      */
     @Contract(pure = true)
     operator fun Path.div(other: EnvPath): Result<Path> =
-        resolve(other)
+        this resolve other
+
+    companion object {
+        /**
+         * Creates a [PathMapperScope] from a [pathMapper].
+         */
+        operator fun invoke(pathMapper: PathMapper): PathMapperScope =
+            object : PathMapperScope {
+                override val pathMapper = pathMapper
+            }
+
+        /**
+         * Calls the [block] with a [PathMapperScope] as its receiver and
+         * returns its result.
+         *
+         * @param pathMapper the path mapper to produce the necessary
+         *   [PathMapperScope].
+         */
+        fun <R> withPathMapper(
+            pathMapper: PathMapper,
+            block: PathMapperScope.() -> R,
+        ): R =
+            with(PathMapperScope(pathMapper), block)
+    }
 }

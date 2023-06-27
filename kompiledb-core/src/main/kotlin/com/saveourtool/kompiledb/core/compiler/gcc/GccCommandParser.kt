@@ -28,7 +28,7 @@ internal class GccCommandParser(
         databasePath: Path,
         command: CompilationCommand,
     ): ParsedCompilerCommand {
-        val projectDir = when {
+        val projectRoot = when {
             databasePath.isDirectory() -> databasePath
 
             else -> {
@@ -40,7 +40,7 @@ internal class GccCommandParser(
             }
         }
 
-        val errors = mutableListOf<String>()
+        val parseErrors = mutableListOf<String>()
         val arguments = command.parsedArguments
             .asSequence()
             .flatMapIndexed { index, argument ->
@@ -54,7 +54,7 @@ internal class GccCommandParser(
                      * Read the content of the response file.
                      */
                     argument.isResponseFile -> expandResponseFile(
-                        projectDir,
+                        projectRoot,
                         command.directory,
                         EnvPath(argument.substring(1)),
                     )
@@ -62,7 +62,7 @@ internal class GccCommandParser(
                             /*
                              * Collect errors, if any.
                              */
-                            errors += failure.localizedMessageExt ?: failure.toString()
+                            parseErrors += failure.localizedMessageExt ?: failure.toString()
                             emptySequence()
                         }
 
@@ -73,11 +73,40 @@ internal class GccCommandParser(
                 }
             }
             .toList()
-        return ParsedCompilerCommand(arguments, errors)
+
+        val compiler = arguments.firstOrNull()?.let(::EnvPath)
+            ?: run {
+                parseErrors += "The compiler path is empty"
+                EnvPath.EMPTY
+            }
+
+        val includePaths = mutableMapOf<String, MutableList<EnvPath>>()
+        val definedMacros = mutableMapOf<String, String>()
+        val undefinedMacros = mutableListOf<String>()
+
+        val ignoredArguments = arguments.asSequence()
+            .drop(1)
+            .collectIncludePathsTo(includePaths)
+            .collectDefinedMacrosTo(definedMacros)
+            .collectUndefinedMacrosTo(undefinedMacros)
+            .toList()
+
+        return ParsedCompilerCommand(
+            projectRoot = projectRoot,
+            directory = command.directory,
+            file = command.file,
+            compiler = compiler,
+            includePaths = includePaths,
+            definedMacros = definedMacros,
+            undefinedMacros = undefinedMacros,
+            arguments = arguments,
+            ignoredArguments = ignoredArguments,
+            parseErrors = parseErrors,
+        )
     }
 
     private fun expandResponseFile(
-        projectDir: Path,
+        projectRoot: Path,
         directory: EnvPath,
         responseFile: EnvPath,
     ): Result<Sequence<Arg>> =
@@ -85,7 +114,7 @@ internal class GccCommandParser(
             /*
              * Resolve from right to left.
              */
-            val resolved = (projectDir / (directory / responseFile)).getOrElse { error ->
+            val resolved = (projectRoot / (directory / responseFile)).getOrElse { error ->
                 /*
                  * We may fail resolving environment paths against the local path.
                  */
@@ -109,9 +138,52 @@ internal class GccCommandParser(
          */
         private const val RESPONSE_FILE = '@'
 
+        /**
+         * See [3.16 Options for Directory Search](https://gcc.gnu.org/onlinedocs/gcc/Directory-Options.html)
+         */
+        private val INCLUDE_SWITCHES: Array<out String> = arrayOf(
+            "-I",
+            "-iquote",
+            "-isystem",
+            "-idirafter",
+            "-include",
+            "-imacros",
+        )
+
+        /**
+         * See [3.16 Options for Directory Search](https://gcc.gnu.org/onlinedocs/gcc/Directory-Options.html)
+         */
+        private val IGNORED_INCLUDE_SWITCHES: Array<out String> = arrayOf(
+            "-I-",
+        )
+
+        private val DEFINE_MACRO_SWITCHES: Array<out String> = arrayOf(
+            "-D",
+        )
+
+        private val UNDEFINE_MACRO_SWITCHES: Array<out String> = arrayOf(
+            "-U",
+        )
+
         private val Arg.isResponseFile: Boolean
             get() =
                 isNotEmpty() && this[0] == RESPONSE_FILE
+
+        private val Arg.isIncludeSwitch: Boolean
+            get() =
+                INCLUDE_SWITCHES.any(this::startsWith) && !isIgnoredIncludeSwitch
+
+        private val Arg.isIgnoredIncludeSwitch: Boolean
+            get() =
+                this in IGNORED_INCLUDE_SWITCHES
+
+        private val Arg.isDefineMacroSwitch: Boolean
+            get() =
+                DEFINE_MACRO_SWITCHES.any(this::startsWith)
+
+        private val Arg.isUndefineMacroSwitch: Boolean
+            get() =
+                UNDEFINE_MACRO_SWITCHES.any(this::startsWith)
 
         private val Throwable.localizedMessageExt: String?
             get() {
@@ -120,6 +192,180 @@ internal class GccCommandParser(
                     is NoSuchFileException -> "No such file: $message"
                     else -> message
                 }
+            }
+
+        private fun Sequence<Arg>.collectIncludePathsTo(includePaths: MutableMap<String, MutableList<EnvPath>>): Sequence<Arg> =
+            sequence {
+                var lastIncludeSwitch: String? = null
+                val expectingIncludePath: () -> Boolean = {
+                    lastIncludeSwitch != null
+                }
+
+                forEach { argument ->
+                    when {
+                        expectingIncludePath() -> {
+                            includePaths.compute(lastIncludeSwitch!!) { _, value ->
+                                (value ?: mutableListOf()).apply {
+                                    this += EnvPath(argument)
+                                }
+                            }
+                            lastIncludeSwitch = null
+                        }
+
+                        /*
+                         * -I
+                         */
+                        argument.isIncludeSwitch -> {
+                            val (switch, includePath) = argument.includePathOrNull()
+                            when (includePath) {
+                                null -> lastIncludeSwitch = switch
+                                else -> {
+                                    includePaths.compute(switch) { _, value ->
+                                        (value ?: mutableListOf()).apply {
+                                            this += EnvPath(includePath)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        /*
+                         * Not an include path, pass through.
+                         */
+                        else -> yield(argument)
+                    }
+                }
+            }
+
+        private fun Sequence<Arg>.collectDefinedMacrosTo(definedMacros: MutableMap<String, String>): Sequence<Arg> =
+            sequence {
+                var expectingDefinedMacro = false
+
+                forEach { argument ->
+                    when {
+                        expectingDefinedMacro -> {
+                            val (name, value) = argument.splitToNameAndValue()
+                            definedMacros[name] = value
+                            expectingDefinedMacro = false
+                        }
+
+                        /*
+                         * -D
+                         */
+                        argument.isDefineMacroSwitch -> {
+                            when (val definedMacro = argument.definedMacroOrNull()) {
+                                null -> expectingDefinedMacro = true
+                                else -> {
+                                    val (name, value) = definedMacro.splitToNameAndValue()
+                                    definedMacros[name] = value
+                                }
+                            }
+                        }
+
+                        /*
+                         * Not a `-D`, pass through.
+                         */
+                        else -> yield(argument)
+                    }
+                }
+            }
+
+        private fun Sequence<Arg>.collectUndefinedMacrosTo(undefinedMacros: MutableList<String>): Sequence<Arg> =
+            sequence {
+                var expectingUndefinedMacro = false
+
+                forEach { argument ->
+                    when {
+                        expectingUndefinedMacro -> {
+                            undefinedMacros += argument
+                            expectingUndefinedMacro = false
+                        }
+
+                        /*
+                         * -U
+                         */
+                        argument.isUndefineMacroSwitch -> {
+                            when (val undefinedMacro = argument.undefinedMacroOrNull()) {
+                                null -> expectingUndefinedMacro = true
+                                else -> undefinedMacros += undefinedMacro
+                            }
+                        }
+
+                        /*
+                         * Not a `-U`, pass through.
+                         */
+                        else -> yield(argument)
+                    }
+                }
+            }
+
+        /**
+         * @return the pair where the second value is the argument of the `-I`
+         *   switch, or `null` if there's no argument and the next command-line
+         *   argument should be examined instead.
+         */
+        private fun Arg.includePathOrNull(): Pair<String, String?> {
+            require(isIncludeSwitch) {
+                "Not an include (-I) switch: $this"
+            }
+
+            return INCLUDE_SWITCHES.asSequence()
+                .filter(this::startsWith)
+                .map { switch ->
+                    switch to substring(switch.length)
+                }
+                .map { (switch, includePath) ->
+                    switch to includePath.nullIfEmpty()
+                }
+                .first()
+        }
+
+        private fun Arg.definedMacroOrNull(): String? {
+            require(isDefineMacroSwitch) {
+                "Not a define macro (-D) switch: $this"
+            }
+
+            return DEFINE_MACRO_SWITCHES.asSequence()
+                .filter(this::startsWith)
+                .map { switch ->
+                    substring(switch.length)
+                }
+                .map { definedMacro ->
+                    definedMacro.nullIfEmpty()
+                }
+                .first()
+        }
+
+        private fun Arg.undefinedMacroOrNull(): String? {
+            require(isUndefineMacroSwitch) {
+                "Not an undefine macro (-U) switch: $this"
+            }
+
+            return UNDEFINE_MACRO_SWITCHES.asSequence()
+                .filter(this::startsWith)
+                .map { switch ->
+                    substring(switch.length)
+                }
+                .map { undefinedMacro ->
+                    undefinedMacro.nullIfEmpty()
+                }
+                .first()
+        }
+
+        /**
+         * - For both `DEBUG` and `DEBUG=1`, will return `("DEBUG", "1")`.
+         * - For `DEBUG=`, will return  `("DEBUG", "")`.
+         */
+        private fun String.splitToNameAndValue(): Pair<String, String> =
+            when (val index = indexOf('=')) {
+                -1 -> this to "1"
+                else -> substring(0, index) to substring(index + 1)
+            }
+
+        private fun String.nullIfEmpty(): String? =
+            when {
+                isEmpty() -> null
+                else -> this
             }
     }
 }
