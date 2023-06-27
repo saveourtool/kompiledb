@@ -28,7 +28,7 @@ internal class GccCommandParser(
         databasePath: Path,
         command: CompilationCommand,
     ): ParsedCompilerCommand {
-        val projectDir = when {
+        val projectRoot = when {
             databasePath.isDirectory() -> databasePath
 
             else -> {
@@ -40,7 +40,7 @@ internal class GccCommandParser(
             }
         }
 
-        val errors = mutableListOf<String>()
+        val parseErrors = mutableListOf<String>()
         val arguments = command.parsedArguments
             .asSequence()
             .flatMapIndexed { index, argument ->
@@ -54,7 +54,7 @@ internal class GccCommandParser(
                      * Read the content of the response file.
                      */
                     argument.isResponseFile -> expandResponseFile(
-                        projectDir,
+                        projectRoot,
                         command.directory,
                         EnvPath(argument.substring(1)),
                     )
@@ -62,7 +62,7 @@ internal class GccCommandParser(
                             /*
                              * Collect errors, if any.
                              */
-                            errors += failure.localizedMessageExt ?: failure.toString()
+                            parseErrors += failure.localizedMessageExt ?: failure.toString()
                             emptySequence()
                         }
 
@@ -76,30 +76,21 @@ internal class GccCommandParser(
 
         val compiler = arguments.firstOrNull()?.let(::EnvPath)
             ?: run {
-                errors += "The compiler path is empty"
+                parseErrors += "The compiler path is empty"
                 EnvPath.EMPTY
             }
 
-        var lastIncludeSwitch: String? = null
-        val expectingIncludePath: () -> Boolean = {
-            lastIncludeSwitch != null
-        }
         var expectingDefinedMacro = false
         var expectingUndefinedMacro = false
-        val includePaths = mutableMapOf<String, EnvPath>()
+        val includePaths = mutableMapOf<String, MutableList<EnvPath>>()
         val definedMacros = mutableMapOf<String, String>()
         val undefinedMacros = mutableListOf<String>()
 
         val ignoredArguments = arguments.asSequence()
             .drop(1)
+            .collectIncludePathsTo(includePaths)
             .filter { argument ->
                 when {
-                    expectingIncludePath() -> {
-                        includePaths[lastIncludeSwitch!!] = EnvPath(argument)
-                        lastIncludeSwitch = null
-                        false
-                    }
-
                     expectingDefinedMacro -> {
                         val (name, value) = argument.splitToNameAndValue()
                         definedMacros[name] = value
@@ -111,18 +102,6 @@ internal class GccCommandParser(
                     expectingUndefinedMacro -> {
                         undefinedMacros += argument
                         expectingUndefinedMacro = false
-                        false
-                    }
-
-                    /*
-                     * -I
-                     */
-                    argument.isIncludeSwitch -> {
-                        val (switch, includePath) = argument.includePathOrNull()
-                        when (includePath) {
-                            null -> lastIncludeSwitch = switch
-                            else -> includePaths[switch] = EnvPath(includePath)
-                        }
                         false
                     }
 
@@ -160,18 +139,21 @@ internal class GccCommandParser(
             .toList()
 
         return ParsedCompilerCommand(
+            projectRoot = projectRoot,
+            directory = command.directory,
+            file = command.file,
             compiler = compiler,
             includePaths = includePaths,
             definedMacros = definedMacros,
             undefinedMacros = undefinedMacros,
             arguments = arguments,
             ignoredArguments = ignoredArguments,
-            errors = errors,
+            parseErrors = parseErrors,
         )
     }
 
     private fun expandResponseFile(
-        projectDir: Path,
+        projectRoot: Path,
         directory: EnvPath,
         responseFile: EnvPath,
     ): Result<Sequence<Arg>> =
@@ -179,7 +161,7 @@ internal class GccCommandParser(
             /*
              * Resolve from right to left.
              */
-            val resolved = (projectDir / (directory / responseFile)).getOrElse { error ->
+            val resolved = (projectRoot / (directory / responseFile)).getOrElse { error ->
                 /*
                  * We may fail resolving environment paths against the local path.
                  */
@@ -211,6 +193,8 @@ internal class GccCommandParser(
             "-iquote",
             "-isystem",
             "-idirafter",
+            "-include",
+            "-imacros",
         )
 
         /**
@@ -254,6 +238,49 @@ internal class GccCommandParser(
                 return when (this) {
                     is NoSuchFileException -> "No such file: $message"
                     else -> message
+                }
+            }
+
+        private fun Sequence<Arg>.collectIncludePathsTo(includePaths: MutableMap<String, MutableList<EnvPath>>): Sequence<Arg> =
+            sequence {
+                var lastIncludeSwitch: String? = null
+                val expectingIncludePath: () -> Boolean = {
+                    lastIncludeSwitch != null
+                }
+
+                forEach { argument ->
+                    when {
+                        expectingIncludePath() -> {
+                            includePaths.compute(lastIncludeSwitch!!) { _, value ->
+                                (value ?: mutableListOf()).apply {
+                                    this += EnvPath(argument)
+                                }
+                            }
+                            lastIncludeSwitch = null
+                        }
+
+                        /*
+                         * -I
+                         */
+                        argument.isIncludeSwitch -> {
+                            val (switch, includePath) = argument.includePathOrNull()
+                            when (includePath) {
+                                null -> lastIncludeSwitch = switch
+                                else -> {
+                                    includePaths.compute(switch) { _, value ->
+                                        (value ?: mutableListOf()).apply {
+                                            this += EnvPath(includePath)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        /*
+                         * Not an include path.
+                         */
+                        else -> yield(argument)
+                    }
                 }
             }
 
