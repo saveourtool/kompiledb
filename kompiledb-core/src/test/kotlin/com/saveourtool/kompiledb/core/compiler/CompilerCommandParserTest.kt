@@ -7,6 +7,7 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.equals.shouldBeEqual
+import io.kotest.matchers.maps.shouldContainExactly
 import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.paths.shouldBeAbsolute
 import io.kotest.matchers.string.shouldStartWith
@@ -291,5 +292,63 @@ class CompilerCommandParserTest {
                 "file3.h",
                 "file4.h",
             )
+    }
+
+    @Test
+    fun `defined macros`(@TempDir projectRoot: Path) {
+        val sourceDir = (projectRoot / "src").createDirectories()
+
+        val command = CompilationCommand(
+            directory = EnvPath(pathString = "./${sourceDir.name}/"),
+            file = EnvPath("file.c"),
+            arguments = listOf(
+                "gcc",
+                "-DMACRO1",
+                "-DMACRO2=2",
+                "-D", "MACRO3=\"Three\"",
+                "-c",
+                "file.c",
+                "-o",
+                "file.o",
+            ),
+            output = EnvPath("file.o")
+        )
+
+        val parsedCommand = CompilerCommandParser().parse(projectRoot, command)
+
+        parsedCommand.definedMacros.shouldContainExactly(
+            mapOf(
+                "MACRO1" to "1",
+                "MACRO2" to "2",
+                "MACRO3" to "\"Three\"",
+            )
+        )
+    }
+
+    @Test
+    fun `undefined macros`(@TempDir projectRoot: Path) {
+        val sourceDir = (projectRoot / "src").createDirectories()
+
+        val command = CompilationCommand(
+            directory = EnvPath(pathString = "./${sourceDir.name}/"),
+            file = EnvPath("file.c"),
+            arguments = listOf(
+                "gcc",
+                "-UMACRO1",
+                "-U", "MACRO2",
+                "-c",
+                "file.c",
+                "-o",
+                "file.o",
+            ),
+            output = EnvPath("file.o")
+        )
+
+        val parsedCommand = CompilerCommandParser().parse(projectRoot, command)
+
+        parsedCommand.undefinedMacros.shouldContainExactlyInAnyOrder(
+            "MACRO1",
+            "MACRO2",
+        )
     }
 }
