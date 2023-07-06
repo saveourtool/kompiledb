@@ -8,6 +8,7 @@ import com.saveourtool.kompiledb.core.io.Arg
 import com.saveourtool.kompiledb.core.io.CommandLineParser
 import com.saveourtool.kompiledb.core.io.PathMapper
 import com.saveourtool.kompiledb.core.io.PathMapperScope
+import com.saveourtool.kompiledb.core.lang.Language
 import java.nio.file.NoSuchFileException
 import java.nio.file.Path
 import kotlin.Result.Companion.failure
@@ -96,6 +97,7 @@ internal class GccCommandParser(
             directory = command.directory,
             file = command.file,
             compiler = compiler,
+            language = Language("c++"),
             includePaths = includePaths,
             definedMacros = definedMacros,
             undefinedMacros = undefinedMacros,
