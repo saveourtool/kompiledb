@@ -90,9 +90,13 @@ internal class ClangCommandParser(
         val definedMacros = mutableMapOf<String, String>()
         val undefinedMacros = mutableListOf<String>()
         var language: Language? = null
+        var languageStandard: String? = null
 
         val ignoredArguments = arguments.asSequence()
             .drop(1)
+            .collectPrefixed("-std=") { _, optionValue ->
+                languageStandard = optionValue
+            }
             .collectOptionValues(options = INCLUDE_SWITCHES) { option, optionValue ->
                 /*
                  * `-I-` is just a separator and should be ignored.
@@ -133,6 +137,7 @@ internal class ClangCommandParser(
             file = command.file,
             compiler = compiler,
             language = language ?: command.file.language,
+            languageStandard = languageStandard,
             includePaths = includePaths,
             definedMacros = definedMacros,
             undefinedMacros = undefinedMacros,
@@ -249,9 +254,15 @@ internal class ClangCommandParser(
                     else -> Language(extension)
                 }
 
+        /**
+         * Collects options and their values which can be either a single
+         * argument (`-Ifoo`) or two adjacent arguments (`-I foo`).
+         *
+         * @see collectPrefixed
+         */
         private fun Sequence<Arg>.collectOptionValues(
             vararg options: String,
-            consumeOptionAndValue: (String, String) -> Unit,
+            consumeOptionAndValue: (option: String, value: String) -> Unit,
         ): Sequence<Arg> =
             sequence {
                 fun Arg.isExpectedOption(): Boolean =
@@ -297,6 +308,50 @@ internal class ClangCommandParser(
                                 null -> lastOption = option
                                 else -> consumeOptionAndValue(option, value)
                             }
+                        }
+
+                        /*
+                         * Not the the expected option, pass through.
+                         */
+                        else -> yield(arg)
+                    }
+                }
+            }
+
+        /**
+         * Collects options and their values which can only be a single
+         * argument (`-std=gnu99`).
+         *
+         * @see collectOptionValues
+         */
+        private fun Sequence<Arg>.collectPrefixed(
+            vararg options: String,
+            consumeOptionAndValue: (option: String, value: String) -> Unit,
+        ): Sequence<Arg> =
+            sequence {
+                fun Arg.isExpectedOption(): Boolean =
+                    options.any(this::startsWith)
+
+                /**
+                 * @return the pair where the second value is the argument of
+                 *   the switch.
+                 */
+                fun Arg.optionValue(): Pair<String, String> =
+                    options.asSequence()
+                        .filter(this::startsWith)
+                        .map { option ->
+                            option to substring(option.length)
+                        }
+                        .first()
+
+                forEach { arg ->
+                    when {
+                        /*
+                         * The expected option.
+                         */
+                        arg.isExpectedOption() -> {
+                            val (option, value) = arg.optionValue()
+                            consumeOptionAndValue(option, value)
                         }
 
                         /*
