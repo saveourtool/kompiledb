@@ -93,16 +93,37 @@ internal class GccCommandParser(
 
         val ignoredArguments = arguments.asSequence()
             .drop(1)
-            .collectIncludePathsTo(includePaths)
-            .collectDefinedMacrosTo(definedMacros)
-            .collectUndefinedMacrosTo(undefinedMacros)
-            .collectLanguage {
+            .collectOptionValues(*INCLUDE_SWITCHES) { option, optionValue ->
+                /*
+                 * `-I-` is just a separator and should be ignored.
+                 */
+                if (option + optionValue !in IGNORED_INCLUDE_SWITCHES) {
+                    includePaths.compute(option) { _, value ->
+                        (value ?: mutableListOf()).apply {
+                            this@apply += EnvPath(optionValue)
+                        }
+                    }
+                }
+            }
+            .collectOptionValues(*DEFINE_MACRO_SWITCHES) { _, optionValue ->
+                val (name, value) = optionValue.splitToNameAndValue()
+                definedMacros[name] = value
+            }
+            .collectOptionValues(*UNDEFINE_MACRO_SWITCHES) { _, optionValue ->
+                undefinedMacros += optionValue
+            }
+            .collectOptionValues(*LANGUAGE_SWITCHES) { _, optionValue ->
                 /*
                  * `-x none` has a special meaning.
                  */
-                if (it.name != "none") {
-                    language = it
+                if (optionValue != "none") {
+                    language = Language(optionValue)
                 }
+            }
+            .collectOptionValues("-o") { _, _ ->
+                /*
+                 * Ignore `-o` and its argument.
+                 */
             }
             .toList()
 
@@ -210,26 +231,6 @@ internal class GccCommandParser(
             get() =
                 isNotEmpty() && this[0] == RESPONSE_FILE
 
-        private val Arg.isIncludeSwitch: Boolean
-            get() =
-                INCLUDE_SWITCHES.any(this::startsWith) && !isIgnoredIncludeSwitch
-
-        private val Arg.isIgnoredIncludeSwitch: Boolean
-            get() =
-                this in IGNORED_INCLUDE_SWITCHES
-
-        private val Arg.isDefineMacroSwitch: Boolean
-            get() =
-                DEFINE_MACRO_SWITCHES.any(this::startsWith)
-
-        private val Arg.isUndefineMacroSwitch: Boolean
-            get() =
-                UNDEFINE_MACRO_SWITCHES.any(this::startsWith)
-
-        private val Arg.isLanguageSwitch: Boolean
-            get() =
-                LANGUAGE_SWITCHES.any(this::startsWith)
-
         private val Throwable.localizedMessageExt: String?
             get() {
                 val message = localizedMessage
@@ -248,208 +249,63 @@ internal class GccCommandParser(
                     else -> Language(extension)
                 }
 
-        private fun Sequence<Arg>.collectIncludePathsTo(includePaths: MutableMap<String, MutableList<EnvPath>>): Sequence<Arg> =
+        private fun Sequence<Arg>.collectOptionValues(
+            vararg options: String,
+            consumeOptionAndValue: (String, String) -> Unit,
+        ): Sequence<Arg> =
             sequence {
-                var lastIncludeSwitch: String? = null
-                val expectingOptionArg: () -> Boolean = {
-                    lastIncludeSwitch != null
+                fun Arg.isExpectedOption(): Boolean =
+                    options.any(this::startsWith)
+
+                /**
+                 * @return the pair where the second value is the argument of
+                 *   the switch, or `null` if there's no argument and the next
+                 *   command-line argument should be examined instead.
+                 */
+                fun Arg.optionValueOrNull(): Pair<String, String?> =
+                    options.asSequence()
+                        .filter(this::startsWith)
+                        .map { option ->
+                            option to substring(option.length)
+                        }
+                        .map { (option, value) ->
+                            option to value.nullIfEmpty()
+                        }
+                        .first()
+
+                var lastOption: String? = null
+                val expectingOptionValue: () -> Boolean = {
+                    lastOption != null
                 }
 
-                forEach { argument ->
+                forEach { arg ->
                     when {
-                        expectingOptionArg() -> {
-                            includePaths.compute(lastIncludeSwitch!!) { _, value ->
-                                (value ?: mutableListOf()).apply {
-                                    this += EnvPath(argument)
-                                }
-                            }
-                            lastIncludeSwitch = null
+                        /*
+                         * The option value.
+                         */
+                        expectingOptionValue() -> {
+                            consumeOptionAndValue(lastOption!!, arg)
+                            lastOption = null
                         }
 
                         /*
-                         * -I
+                         * The expected option.
                          */
-                        argument.isIncludeSwitch -> {
-                            val (switch, includePath) = argument.includePathOrNull()
-                            when (includePath) {
-                                null -> lastIncludeSwitch = switch
-                                else -> {
-                                    includePaths.compute(switch) { _, value ->
-                                        (value ?: mutableListOf()).apply {
-                                            this += EnvPath(includePath)
-                                        }
-                                    }
-                                }
+                        arg.isExpectedOption() -> {
+                            val (option, value) = arg.optionValueOrNull()
+                            when (value) {
+                                null -> lastOption = option
+                                else -> consumeOptionAndValue(option, value)
                             }
                         }
 
                         /*
-                         * Not an include path, pass through.
+                         * Not the the expected option, pass through.
                          */
-                        else -> yield(argument)
+                        else -> yield(arg)
                     }
                 }
             }
-
-        private fun Sequence<Arg>.collectDefinedMacrosTo(definedMacros: MutableMap<String, String>): Sequence<Arg> =
-            sequence {
-                var expectingOptionArg = false
-
-                forEach { argument ->
-                    when {
-                        expectingOptionArg -> {
-                            val (name, value) = argument.splitToNameAndValue()
-                            definedMacros[name] = value
-                            expectingOptionArg = false
-                        }
-
-                        /*
-                         * -D
-                         */
-                        argument.isDefineMacroSwitch -> {
-                            when (val definedMacro = argument.definedMacroOrNull()) {
-                                null -> expectingOptionArg = true
-                                else -> {
-                                    val (name, value) = definedMacro.splitToNameAndValue()
-                                    definedMacros[name] = value
-                                }
-                            }
-                        }
-
-                        /*
-                         * Not a `-D`, pass through.
-                         */
-                        else -> yield(argument)
-                    }
-                }
-            }
-
-        private fun Sequence<Arg>.collectUndefinedMacrosTo(undefinedMacros: MutableList<String>): Sequence<Arg> =
-            sequence {
-                var expectingOptionArg = false
-
-                forEach { argument ->
-                    when {
-                        expectingOptionArg -> {
-                            undefinedMacros += argument
-                            expectingOptionArg = false
-                        }
-
-                        /*
-                         * -U
-                         */
-                        argument.isUndefineMacroSwitch -> {
-                            when (val undefinedMacro = argument.undefinedMacroOrNull()) {
-                                null -> expectingOptionArg = true
-                                else -> undefinedMacros += undefinedMacro
-                            }
-                        }
-
-                        /*
-                         * Not a `-U`, pass through.
-                         */
-                        else -> yield(argument)
-                    }
-                }
-            }
-
-        private fun Sequence<Arg>.collectLanguage(languageConsumer: (Language) -> Unit): Sequence<Arg> =
-            sequence {
-                var expectingOptionArg = false
-
-                forEach { argument ->
-                    when {
-                        expectingOptionArg -> {
-                            languageConsumer(Language(argument))
-                            expectingOptionArg = false
-                        }
-
-                        /*
-                         * -x
-                         */
-                        argument.isLanguageSwitch -> {
-                            when (val language = argument.languageOrNull()) {
-                                null -> expectingOptionArg = true
-                                else -> languageConsumer(Language(language))
-                            }
-                        }
-
-                        /*
-                         * Not a `-x`, pass through.
-                         */
-                        else -> yield(argument)
-                    }
-                }
-            }
-
-        /**
-         * @return the pair where the second value is the argument of the `-I`
-         *   switch, or `null` if there's no argument and the next command-line
-         *   argument should be examined instead.
-         */
-        private fun Arg.includePathOrNull(): Pair<String, String?> {
-            require(isIncludeSwitch) {
-                "Not an include (-I) switch: $this"
-            }
-
-            return INCLUDE_SWITCHES.asSequence()
-                .filter(this::startsWith)
-                .map { switch ->
-                    switch to substring(switch.length)
-                }
-                .map { (switch, includePath) ->
-                    switch to includePath.nullIfEmpty()
-                }
-                .first()
-        }
-
-        private fun Arg.definedMacroOrNull(): String? {
-            require(isDefineMacroSwitch) {
-                "Not a define macro (-D) switch: $this"
-            }
-
-            return DEFINE_MACRO_SWITCHES.asSequence()
-                .filter(this::startsWith)
-                .map { switch ->
-                    substring(switch.length)
-                }
-                .map { definedMacro ->
-                    definedMacro.nullIfEmpty()
-                }
-                .first()
-        }
-
-        private fun Arg.undefinedMacroOrNull(): String? {
-            require(isUndefineMacroSwitch) {
-                "Not an undefine macro (-U) switch: $this"
-            }
-
-            return UNDEFINE_MACRO_SWITCHES.asSequence()
-                .filter(this::startsWith)
-                .map { switch ->
-                    substring(switch.length)
-                }
-                .map { undefinedMacro ->
-                    undefinedMacro.nullIfEmpty()
-                }
-                .first()
-        }
-
-        private fun Arg.languageOrNull(): String? {
-            require(isLanguageSwitch) {
-                "Not a language (-x) switch: $this"
-            }
-
-            return LANGUAGE_SWITCHES.asSequence()
-                .filter(this::startsWith)
-                .map { switch ->
-                    substring(switch.length)
-                }
-                .map { undefinedMacro ->
-                    undefinedMacro.nullIfEmpty()
-                }
-                .first()
-        }
 
         /**
          * - For both `DEBUG` and `DEBUG=1`, will return `("DEBUG", "1")`.
