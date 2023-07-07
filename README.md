@@ -23,7 +23,7 @@ This library is inspired by tools such as [nickdiego/compiledb](https://github.c
    + [response file](https://gcc.gnu.org/wiki/Response_Files) expansion;
    + support for 'single'- and "double"-quoted arguments (also within response files);
    + include paths (`-I`, `-include`, `-isystem` and so on) recognized;
-   + defined (-D) and undefined (-U) preprocessor macros recognized;
+   + defined (`-D`) and undefined (`-U`) preprocessor macros recognized;
    + language (C, C++) and standard (`c++17`, `gnu++14`) recognized;
    + `-nostdinc`, `-nostdinc++` and similar switches recognized.
 
