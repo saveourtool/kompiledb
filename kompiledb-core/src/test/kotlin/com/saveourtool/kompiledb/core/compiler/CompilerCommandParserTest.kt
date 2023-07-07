@@ -2,6 +2,7 @@ package com.saveourtool.kompiledb.core.compiler
 
 import com.saveourtool.kompiledb.core.CompilationCommand
 import com.saveourtool.kompiledb.core.EnvPath
+import com.saveourtool.kompiledb.core.lang.C
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
@@ -10,10 +11,14 @@ import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.maps.shouldContainExactly
 import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.paths.shouldBeAbsolute
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
+import org.intellij.lang.annotations.Language
+import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.io.TempDir
 import java.io.File.separatorChar
 import java.nio.file.Path
+import kotlin.io.path.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.div
 import kotlin.io.path.name
@@ -350,5 +355,69 @@ class CompilerCommandParserTest {
             "MACRO1",
             "MACRO2",
         )
+    }
+
+    @Test
+    fun `dash-x switch should get parsed (C)`() {
+        @Language("sh")
+        val commands = sequenceOf(
+            "clang -xc -c file.c",
+            "clang -x c -c file.c",
+        )
+
+        assertAll(
+            commands
+                .map { command ->
+                    CompilationCommand(
+                        directory = EnvPath.EMPTY,
+                        file = EnvPath("file.c"),
+                        command = command,
+                    )
+                }
+                .map { command ->
+                    CompilerCommandParser().parse(Path(""), command)
+                }
+                .map { command ->
+                    { command.language shouldBe C }.lazyUnit
+                }
+                .toList()
+        )
+    }
+
+    @Test
+    fun `dash-x switch should get parsed, the last occurrence taking precedence (C)`() {
+        @Language("sh")
+        val commands = sequenceOf(
+            "clang -xc++ -xc -c file.c",
+            "clang -xc++ -x c -c file.c",
+            "clang -x c++ -xc -c file.c",
+            "clang -x c++ -x c -c file.c",
+        )
+
+        assertAll(
+            commands
+                .map { command ->
+                    CompilationCommand(
+                        directory = EnvPath.EMPTY,
+                        file = EnvPath("file.c"),
+                        command = command,
+                    )
+                }
+                .map { command ->
+                    CompilerCommandParser().parse(Path(""), command)
+                }
+                .map { command ->
+                    { command.language shouldBe C }.lazyUnit
+                }
+                .toList()
+        )
+    }
+
+    private companion object {
+        private val <T> (() -> T).lazyUnit: () -> Unit
+            get() = {
+                this()
+                Unit
+            }
     }
 }
