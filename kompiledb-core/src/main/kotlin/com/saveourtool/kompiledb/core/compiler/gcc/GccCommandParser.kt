@@ -84,12 +84,16 @@ internal class GccCommandParser(
         val includePaths = mutableMapOf<String, MutableList<EnvPath>>()
         val definedMacros = mutableMapOf<String, String>()
         val undefinedMacros = mutableListOf<String>()
+        var language: Language? = null
 
         val ignoredArguments = arguments.asSequence()
             .drop(1)
             .collectIncludePathsTo(includePaths)
             .collectDefinedMacrosTo(definedMacros)
             .collectUndefinedMacrosTo(undefinedMacros)
+            .collectLanguage {
+                language = it
+            }
             .toList()
 
         return ParsedCompilerCommand(
@@ -97,7 +101,7 @@ internal class GccCommandParser(
             directory = command.directory,
             file = command.file,
             compiler = compiler,
-            language = Language("c++"),
+            language = language ?: Language("c++"),
             includePaths = includePaths,
             definedMacros = definedMacros,
             undefinedMacros = undefinedMacros,
@@ -167,6 +171,17 @@ internal class GccCommandParser(
             "-U",
         )
 
+        private val LANGUAGE_SWITCHES: Array<out String> = arrayOf(
+            "-x",
+        )
+
+        /**
+         * C extensions (not including the dot).
+         */
+        private val C_EXTENSIONS: Array<out String> = arrayOf(
+            "c",
+        )
+
         private val Arg.isResponseFile: Boolean
             get() =
                 isNotEmpty() && this[0] == RESPONSE_FILE
@@ -187,6 +202,10 @@ internal class GccCommandParser(
             get() =
                 UNDEFINE_MACRO_SWITCHES.any(this::startsWith)
 
+        private val Arg.isLanguageSwitch: Boolean
+            get() =
+                LANGUAGE_SWITCHES.any(this::startsWith)
+
         private val Throwable.localizedMessageExt: String?
             get() {
                 val message = localizedMessage
@@ -199,13 +218,13 @@ internal class GccCommandParser(
         private fun Sequence<Arg>.collectIncludePathsTo(includePaths: MutableMap<String, MutableList<EnvPath>>): Sequence<Arg> =
             sequence {
                 var lastIncludeSwitch: String? = null
-                val expectingIncludePath: () -> Boolean = {
+                val expectingOptionArg: () -> Boolean = {
                     lastIncludeSwitch != null
                 }
 
                 forEach { argument ->
                     when {
-                        expectingIncludePath() -> {
+                        expectingOptionArg() -> {
                             includePaths.compute(lastIncludeSwitch!!) { _, value ->
                                 (value ?: mutableListOf()).apply {
                                     this += EnvPath(argument)
@@ -241,14 +260,14 @@ internal class GccCommandParser(
 
         private fun Sequence<Arg>.collectDefinedMacrosTo(definedMacros: MutableMap<String, String>): Sequence<Arg> =
             sequence {
-                var expectingDefinedMacro = false
+                var expectingOptionArg = false
 
                 forEach { argument ->
                     when {
-                        expectingDefinedMacro -> {
+                        expectingOptionArg -> {
                             val (name, value) = argument.splitToNameAndValue()
                             definedMacros[name] = value
-                            expectingDefinedMacro = false
+                            expectingOptionArg = false
                         }
 
                         /*
@@ -256,7 +275,7 @@ internal class GccCommandParser(
                          */
                         argument.isDefineMacroSwitch -> {
                             when (val definedMacro = argument.definedMacroOrNull()) {
-                                null -> expectingDefinedMacro = true
+                                null -> expectingOptionArg = true
                                 else -> {
                                     val (name, value) = definedMacro.splitToNameAndValue()
                                     definedMacros[name] = value
@@ -274,13 +293,13 @@ internal class GccCommandParser(
 
         private fun Sequence<Arg>.collectUndefinedMacrosTo(undefinedMacros: MutableList<String>): Sequence<Arg> =
             sequence {
-                var expectingUndefinedMacro = false
+                var expectingOptionArg = false
 
                 forEach { argument ->
                     when {
-                        expectingUndefinedMacro -> {
+                        expectingOptionArg -> {
                             undefinedMacros += argument
-                            expectingUndefinedMacro = false
+                            expectingOptionArg = false
                         }
 
                         /*
@@ -288,13 +307,42 @@ internal class GccCommandParser(
                          */
                         argument.isUndefineMacroSwitch -> {
                             when (val undefinedMacro = argument.undefinedMacroOrNull()) {
-                                null -> expectingUndefinedMacro = true
+                                null -> expectingOptionArg = true
                                 else -> undefinedMacros += undefinedMacro
                             }
                         }
 
                         /*
                          * Not a `-U`, pass through.
+                         */
+                        else -> yield(argument)
+                    }
+                }
+            }
+
+        private fun Sequence<Arg>.collectLanguage(languageConsumer: (Language) -> Unit): Sequence<Arg> =
+            sequence {
+                var expectingOptionArg = false
+
+                forEach { argument ->
+                    when {
+                        expectingOptionArg -> {
+                            languageConsumer(Language(argument))
+                            expectingOptionArg = false
+                        }
+
+                        /*
+                         * -x
+                         */
+                        argument.isLanguageSwitch -> {
+                            when (val language = argument.languageOrNull()) {
+                                null -> expectingOptionArg = true
+                                else -> languageConsumer(Language(language))
+                            }
+                        }
+
+                        /*
+                         * Not a `-x`, pass through.
                          */
                         else -> yield(argument)
                     }
@@ -344,6 +392,22 @@ internal class GccCommandParser(
             }
 
             return UNDEFINE_MACRO_SWITCHES.asSequence()
+                .filter(this::startsWith)
+                .map { switch ->
+                    substring(switch.length)
+                }
+                .map { undefinedMacro ->
+                    undefinedMacro.nullIfEmpty()
+                }
+                .first()
+        }
+
+        private fun Arg.languageOrNull(): String? {
+            require(isLanguageSwitch) {
+                "Not a language (-x) switch: $this"
+            }
+
+            return LANGUAGE_SWITCHES.asSequence()
                 .filter(this::startsWith)
                 .map { switch ->
                     substring(switch.length)
