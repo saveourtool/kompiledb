@@ -12,6 +12,7 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.maps.shouldContainExactly
 import io.kotest.matchers.maps.shouldHaveSize
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.paths.shouldBeAbsolute
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
@@ -658,6 +659,28 @@ class CompilerCommandParserTest {
                 }
                 .toList()
         )
+    }
+
+    @Test
+    fun `language standard should be parsed`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "clang++ -std=c++23 -c file.cc",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).languageStandard.shouldNotBeNull() shouldBeEqual "c++23"
+    }
+
+    @Test
+    fun `the last language standard should take precedence`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "clang++ -std=c++23 -std=c++14 -c file.cc",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).languageStandard.shouldNotBeNull() shouldBeEqual "c++14"
     }
 
     private companion object {

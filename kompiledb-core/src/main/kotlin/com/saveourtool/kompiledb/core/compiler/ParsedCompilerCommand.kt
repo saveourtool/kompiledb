@@ -23,6 +23,8 @@ import kotlin.collections.Map.Entry
  *   processed by this compilation step.
  * @param compiler the environment-specific path to the compiler.
  * @param language the language of the source file (C, C++, or other).
+ * @param languageStandard the language standard, such as `c++23`, `gnu++14`, or
+ *   `iso9899:2018`.
  * @param includePaths the include paths.
  *   The keys are command-line switches such as `-I` or `-include`.
  *   The values are paths to include files or directories.
@@ -44,6 +46,7 @@ data class ParsedCompilerCommand(
     val file: EnvPath,
     val compiler: EnvPath,
     val language: Language,
+    val languageStandard: String?,
     val includePaths: Map<String, List<EnvPath>>,
     val definedMacros: Map<String, String>,
     val undefinedMacros: List<String>,
