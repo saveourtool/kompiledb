@@ -10,4 +10,7 @@ import com.saveourtool.kompiledb.core.lang.Language.Companion.LANG_C
  */
 object C : Language {
     override val name = LANG_C
+
+    override fun toString(): String =
+        name
 }
