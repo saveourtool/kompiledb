@@ -6,6 +6,7 @@ import com.saveourtool.kompiledb.core.io.ParsedArgs
 import com.saveourtool.kompiledb.core.io.PathMapper
 import com.saveourtool.kompiledb.core.io.PathMapperScope.Companion.withPathMapper
 import com.saveourtool.kompiledb.core.io.mappers.LocalPathMapper
+import com.saveourtool.kompiledb.core.lang.Language
 import java.nio.file.Path
 import kotlin.collections.Map.Entry
 
@@ -21,6 +22,7 @@ import kotlin.collections.Map.Entry
  * @param file the environment-specific path to the main translation unit source
  *   processed by this compilation step.
  * @param compiler the environment-specific path to the compiler.
+ * @param language the language of the source file (C, C++, or other).
  * @param includePaths the include paths.
  *   The keys are command-line switches such as `-I` or `-include`.
  *   The values are paths to include files or directories.
@@ -41,6 +43,7 @@ data class ParsedCompilerCommand(
     val directory: EnvPath,
     val file: EnvPath,
     val compiler: EnvPath,
+    val language: Language,
     val includePaths: Map<String, List<EnvPath>>,
     val definedMacros: Map<String, String>,
     val undefinedMacros: List<String>,
