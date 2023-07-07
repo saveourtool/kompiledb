@@ -34,8 +34,8 @@ class CompilationDatabaseGsonTest {
 
     @Test
     fun `simple database should serialize successfully`() {
-        val command0 = CompilationCommand(EnvPath(""), EnvPath("file1.c"), listOf("gcc", "-c", "file1.c"))
-        val command1 = CompilationCommand(EnvPath(""), EnvPath("file2.c"), listOf("gcc", "-c", "file2.c"))
+        val command0 = CompilationCommand(EnvPath(""), EnvPath("file1.c"), listOf("clang", "-c", "file1.c"))
+        val command1 = CompilationCommand(EnvPath(""), EnvPath("file2.c"), listOf("clang", "-c", "file2.c"))
 
         val database = CompilationDatabase(command0, command1)
 
@@ -50,7 +50,7 @@ class CompilationDatabaseGsonTest {
                 "directory": "",
                 "file": "file1.c",
                 "arguments": [
-                  "gcc",
+                  "clang",
                   "-c",
                   "file1.c"
                 ]
@@ -59,7 +59,7 @@ class CompilationDatabaseGsonTest {
                 "directory": "",
                 "file": "file2.c",
                 "arguments": [
-                  "gcc",
+                  "clang",
                   "-c",
                   "file2.c"
                 ]

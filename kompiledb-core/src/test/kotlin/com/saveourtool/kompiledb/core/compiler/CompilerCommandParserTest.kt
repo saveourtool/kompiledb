@@ -44,7 +44,7 @@ class CompilerCommandParserTest {
         val command = CompilationCommand(
             directory = EnvPath(pathString = "./${sourceDir.name}/"),
             file = EnvPath("file.c"),
-            arguments = listOf("gcc", "@${responseFile.name}", "-c", "file.c", "-o", "file.o"),
+            arguments = listOf("clang", "@${responseFile.name}", "-c", "file.c", "-o", "file.o"),
             output = EnvPath("file.o")
         )
 
@@ -52,7 +52,7 @@ class CompilerCommandParserTest {
 
         parsedCommand.parseErrors.shouldBeEmpty()
         parsedCommand.arguments.shouldContainExactly(
-            "gcc",
+            "clang",
             "-isystemfoo",
             "-Ibar",
             "-I",
@@ -75,7 +75,7 @@ class CompilerCommandParserTest {
         val command = CompilationCommand(
             directory = EnvPath(pathString = "./${sourceDir.name}/"),
             file = EnvPath("file.c"),
-            command = "gcc @${responseFile.name} -c file.c -o file.o",
+            command = "clang @${responseFile.name} -c file.c -o file.o",
             output = EnvPath("file.o")
         )
 
@@ -83,7 +83,7 @@ class CompilerCommandParserTest {
 
         parsedCommand.parseErrors.shouldBeEmpty()
         parsedCommand.arguments.shouldContainExactly(
-            "gcc",
+            "clang",
             "-isystemfoo",
             "-Ibar",
             "-I",
@@ -104,7 +104,7 @@ class CompilerCommandParserTest {
         val command = CompilationCommand(
             directory = EnvPath(pathString = "./${sourceDir.name}/"),
             file = EnvPath("file.c"),
-            arguments = listOf("gcc", "@${responseFile.name}", "-c", "file.c", "-o", "file.o"),
+            arguments = listOf("clang", "@${responseFile.name}", "-c", "file.c", "-o", "file.o"),
             output = EnvPath("file.o")
         )
 
@@ -114,7 +114,7 @@ class CompilerCommandParserTest {
         parsedCommand.parseErrors[0] shouldStartWith "No such file: "
 
         parsedCommand.arguments.shouldContainExactly(
-            "gcc",
+            "clang",
             "-c",
             "file.c",
             "-o",
@@ -130,7 +130,7 @@ class CompilerCommandParserTest {
             directory = EnvPath(pathString = "./${sourceDir.name}/"),
             file = EnvPath("file.c"),
             arguments = listOf(
-                "gcc",
+                "clang",
                 "-I.",
                 "-iquote", "..",
                 "-isystemsubdir1",
@@ -185,7 +185,7 @@ class CompilerCommandParserTest {
         val command = CompilationCommand(
             directory = EnvPath(pathString = "./${sourceDir.name}/"),
             file = EnvPath("file.c"),
-            command = """gcc -I"subdir1" -I "subdir2" "-Isubdir3" -c file.c -o file.o""",
+            command = """clang -I"subdir1" -I "subdir2" "-Isubdir3" -c file.c -o file.o""",
             output = EnvPath("file.o")
         )
 
@@ -219,7 +219,7 @@ class CompilerCommandParserTest {
         val command = CompilationCommand(
             directory = EnvPath(pathString = "./${sourceDir.name}/"),
             file = EnvPath("file.c"),
-            command = """gcc -I "" -c file.c -o file.o""",
+            command = """clang -I "" -c file.c -o file.o""",
             output = EnvPath("file.o")
         )
 
@@ -250,7 +250,7 @@ class CompilerCommandParserTest {
             directory = EnvPath(pathString = "./${sourceDir.name}/"),
             file = EnvPath("file.c"),
             arguments = listOf(
-                "gcc",
+                "clang",
                 "-includefile1.h",
                 "-imacrosfile2.h",
                 "-include", "./file3.h",
@@ -309,7 +309,7 @@ class CompilerCommandParserTest {
             directory = EnvPath(pathString = "./${sourceDir.name}/"),
             file = EnvPath("file.c"),
             arguments = listOf(
-                "gcc",
+                "clang",
                 "-DMACRO1",
                 "-DMACRO2=2",
                 "-D", "MACRO3=\"Three\"",
@@ -340,7 +340,7 @@ class CompilerCommandParserTest {
             directory = EnvPath(pathString = "./${sourceDir.name}/"),
             file = EnvPath("file.c"),
             arguments = listOf(
-                "gcc",
+                "clang",
                 "-UMACRO1",
                 "-U", "MACRO2",
                 "-c",
@@ -504,8 +504,6 @@ class CompilerCommandParserTest {
         val commands = sequenceOf(
             "clang -c file.c",
             "clang++ -c file.c",
-            "gcc -c file.c",
-            "g++ -c file.c",
         )
 
         assertAll(
@@ -533,8 +531,6 @@ class CompilerCommandParserTest {
         val commands = sequenceOf(
             "clang -c file.cc",
             "clang++ -c file.cc",
-            "gcc -c file.cc",
-            "g++ -c file.cc",
         )
 
         assertAll(
@@ -562,8 +558,6 @@ class CompilerCommandParserTest {
         val commands = sequenceOf(
             "clang -c file.f77",
             "clang++ -c file.f77",
-            "gcc -c file.f77",
-            "g++ -c file.f77",
         )
 
         assertAll(
@@ -591,8 +585,6 @@ class CompilerCommandParserTest {
         val commands = sequenceOf(
             "clang -x none -c file.c",
             "clang++ -xnone -c file.c",
-            "gcc -x none -c file.c",
-            "g++ -xnone -c file.c",
         )
 
         assertAll(
@@ -620,8 +612,6 @@ class CompilerCommandParserTest {
         val commands = sequenceOf(
             "clang -x none -c file.cc",
             "clang++ -xnone -c file.cc",
-            "gcc -x none -c file.cc",
-            "g++ -xnone -c file.cc",
         )
 
         assertAll(
@@ -649,8 +639,6 @@ class CompilerCommandParserTest {
         val commands = sequenceOf(
             "clang -c file",
             "clang++ -c file",
-            "gcc -c file",
-            "g++ -c file",
         )
 
         assertAll(
