@@ -182,6 +182,16 @@ internal class GccCommandParser(
             "c",
         )
 
+        /**
+         * C++ extensions (not including the dot).
+         */
+        private val CXX_EXTENSIONS: Array<out String> = arrayOf(
+            "C",
+            "cc",
+            "cpp",
+            "cxx",
+        )
+
         private val Arg.isResponseFile: Boolean
             get() =
                 isNotEmpty() && this[0] == RESPONSE_FILE
