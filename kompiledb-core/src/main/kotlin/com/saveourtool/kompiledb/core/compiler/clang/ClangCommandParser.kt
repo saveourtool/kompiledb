@@ -232,6 +232,22 @@ internal class ClangCommandParser(
             "cxx",
         )
 
+        /**
+         * - `-nostdinc`: **exclude** all the headers (GCC),
+         *     or **retain** only the standard C++ headers for C++ (Clang)
+         * - `-nostdinc++`: **exclude** the standard C++ headers.
+         * - `-nostdlibinc`: **retain** only the compiler built-in headers (Clang).
+         * - `-nobuiltininc`: **exclude** the compiler built-in headers (Clang),
+         *     but **retain** either the standard C, or both C and C++ headers,
+         *     depending on the language.
+         */
+        private val NOSTDINC: Array<out String> = arrayOf(
+            "-nostdinc",
+            "-nostdinc++",
+            "-nostdlibinc",
+            "-nobuiltininc",
+        )
+
         private val Arg.isResponseFile: Boolean
             get() =
                 isNotEmpty() && this[0] == RESPONSE_FILE
