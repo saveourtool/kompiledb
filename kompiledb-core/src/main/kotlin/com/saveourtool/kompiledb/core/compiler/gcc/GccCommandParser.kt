@@ -93,7 +93,7 @@ internal class GccCommandParser(
 
         val ignoredArguments = arguments.asSequence()
             .drop(1)
-            .collectOptionValues(*INCLUDE_SWITCHES) { option, optionValue ->
+            .collectOptionValues(options = INCLUDE_SWITCHES) { option, optionValue ->
                 /*
                  * `-I-` is just a separator and should be ignored.
                  */
@@ -105,14 +105,14 @@ internal class GccCommandParser(
                     }
                 }
             }
-            .collectOptionValues(*DEFINE_MACRO_SWITCHES) { _, optionValue ->
+            .collectOptionValues(options = DEFINE_MACRO_SWITCHES) { _, optionValue ->
                 val (name, value) = optionValue.splitToNameAndValue()
                 definedMacros[name] = value
             }
-            .collectOptionValues(*UNDEFINE_MACRO_SWITCHES) { _, optionValue ->
+            .collectOptionValues(options = UNDEFINE_MACRO_SWITCHES) { _, optionValue ->
                 undefinedMacros += optionValue
             }
-            .collectOptionValues(*LANGUAGE_SWITCHES) { _, optionValue ->
+            .collectOptionValues(options = LANGUAGE_SWITCHES) { _, optionValue ->
                 /*
                  * `-x none` has a special meaning.
                  */
