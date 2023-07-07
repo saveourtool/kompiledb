@@ -13,7 +13,7 @@ class CompilationCommandTest {
     @Test
     fun `should fail if file is empty`() {
         val iae = shouldThrow<IllegalArgumentException> {
-            CompilationCommand(Path(""), Path(""), "gcc -c file.c -o file.o")
+            CompilationCommand(Path(""), Path(""), "clang -c file.c -o file.o")
         }
 
         iae.message.shouldNotBeNull() shouldBeEqual "`file` shouldn't be blank"

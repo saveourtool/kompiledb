@@ -24,7 +24,7 @@ class CompilationCommandGsonTest {
 
     @Test
     fun `single command should serialize successfully`() {
-        val command = CompilationCommand(Path(""), Path("file.c"), listOf("gcc", "-c", "file.c"))
+        val command = CompilationCommand(Path(""), Path("file.c"), listOf("clang", "-c", "file.c"))
 
         val actualJson = with(jsonIo) {
             command.toJson()
@@ -36,7 +36,7 @@ class CompilationCommandGsonTest {
               "directory": "",
               "file": "file.c",
               "arguments": [
-                "gcc",
+                "clang",
                 "-c",
                 "file.c"
               ]
@@ -54,7 +54,7 @@ class CompilationCommandGsonTest {
                 "directory": "",
                 "file": "file.c",
                 "arguments": [
-                    "gcc",
+                    "clang",
                     "-c",
                     "file.c"
                 ]
@@ -67,7 +67,7 @@ class CompilationCommandGsonTest {
 
         command.shouldBeCommand(
             file = "file.c",
-            arguments = listOf("gcc", "-c", "file.c"),
+            arguments = listOf("clang", "-c", "file.c"),
         )
     }
 
@@ -77,7 +77,7 @@ class CompilationCommandGsonTest {
         val json = """
             {
                 "directory": "C:/Users/alice/cmake-3.26.4/Source",
-                "command": "/C/Program_Files/msys64/mingw64/bin/g++.exe -DCURL_STATICLIB -DLIBARCHIVE_STATIC -DUNICODE -DWIN32_LEAN_AND_MEAN -D_UNICODE @CMakeFiles/CMakeLib.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -o CMakeFiles/CMakeLib.dir/cmInstalledFile.cxx.obj -c /C/Users/alice/cmake-3.26.4/Source/cmInstalledFile.cxx",
+                "command": "/C/Program_Files/msys64/mingw64/bin/clang++.exe -DCURL_STATICLIB -DLIBARCHIVE_STATIC -DUNICODE -DWIN32_LEAN_AND_MEAN -D_UNICODE @CMakeFiles/CMakeLib.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -o CMakeFiles/CMakeLib.dir/cmInstalledFile.cxx.obj -c /C/Users/alice/cmake-3.26.4/Source/cmInstalledFile.cxx",
                 "file": "C:/Users/alice/cmake-3.26.4/Source/cmInstalledFile.cxx",
                 "output": "Source/CMakeFiles/CMakeLib.dir/cmInstalledFile.cxx.obj"
             }
@@ -90,7 +90,7 @@ class CompilationCommandGsonTest {
         command.shouldBeCommand(
             directory = "C:/Users/alice/cmake-3.26.4/Source",
             file = "C:/Users/alice/cmake-3.26.4/Source/cmInstalledFile.cxx",
-            command = "/C/Program_Files/msys64/mingw64/bin/g++.exe -DCURL_STATICLIB -DLIBARCHIVE_STATIC -DUNICODE -DWIN32_LEAN_AND_MEAN -D_UNICODE @CMakeFiles/CMakeLib.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -o CMakeFiles/CMakeLib.dir/cmInstalledFile.cxx.obj -c /C/Users/alice/cmake-3.26.4/Source/cmInstalledFile.cxx",
+            command = "/C/Program_Files/msys64/mingw64/bin/clang++.exe -DCURL_STATICLIB -DLIBARCHIVE_STATIC -DUNICODE -DWIN32_LEAN_AND_MEAN -D_UNICODE @CMakeFiles/CMakeLib.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++17 -o CMakeFiles/CMakeLib.dir/cmInstalledFile.cxx.obj -c /C/Users/alice/cmake-3.26.4/Source/cmInstalledFile.cxx",
             output = "Source/CMakeFiles/CMakeLib.dir/cmInstalledFile.cxx.obj",
         )
     }
@@ -147,7 +147,7 @@ class CompilationCommandGsonTest {
                 "directory": "",
                 "file": "file.c",
                 "arguments": [
-                    "gcc",
+                    "clang",
                     "-c",
                     "file.c"
                 ],
@@ -162,7 +162,7 @@ class CompilationCommandGsonTest {
 
         command.shouldBeCommand(
             file = "file.c",
-            arguments = listOf("gcc", "-c", "file.c"),
+            arguments = listOf("clang", "-c", "file.c"),
         )
     }
 
@@ -174,7 +174,7 @@ class CompilationCommandGsonTest {
                 "directory": null,
                 "file": "file.c",
                 "arguments": [
-                    "gcc",
+                    "clang",
                     "-c",
                     "file.c"
                 ]
@@ -186,7 +186,7 @@ class CompilationCommandGsonTest {
         }.shouldBeFailure<JsonSyntaxException>()
 
         failure.message.shouldNotBeNull() shouldBeEqual
-                """`directory` is null: {"directory":null,"file":"file.c","arguments":["gcc","-c","file.c"]}"""
+                """`directory` is null: {"directory":null,"file":"file.c","arguments":["clang","-c","file.c"]}"""
     }
 
     @Test
@@ -197,7 +197,7 @@ class CompilationCommandGsonTest {
                 "directory": "",
                 "file": "file.c",
                 "arguments": [
-                    "gcc",
+                    "clang",
                     "-c",
                     "file.c"
                 ],
@@ -213,7 +213,7 @@ class CompilationCommandGsonTest {
         }.shouldBeFailure<JsonSyntaxException>()
 
         failure.message.shouldNotBeNull() shouldBeEqual
-                """4 unexpected field(s) encountered (extra1, extra2, extra3, extra4): {"directory":"","file":"file.c","arguments":["gcc","-c","file.c"],"extra1":null,"extra2":"foo","extra3":["bar"],"extra4":{}}"""
+                """4 unexpected field(s) encountered (extra1, extra2, extra3, extra4): {"directory":"","file":"file.c","arguments":["clang","-c","file.c"],"extra1":null,"extra2":"foo","extra3":["bar"],"extra4":{}}"""
     }
 
     @Test

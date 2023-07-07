@@ -1,7 +1,7 @@
 package com.saveourtool.kompiledb.core.compiler
 
 import com.saveourtool.kompiledb.core.CompilationCommand
-import com.saveourtool.kompiledb.core.compiler.gcc.GccCommandParser
+import com.saveourtool.kompiledb.core.compiler.clang.ClangCommandParser
 import com.saveourtool.kompiledb.core.io.CommandLineParser
 import com.saveourtool.kompiledb.core.io.PathMapper
 import com.saveourtool.kompiledb.core.io.mappers.LocalPathMapper
@@ -32,6 +32,6 @@ fun interface CompilerCommandParser {
             pathMapper: PathMapper = LocalPathMapper,
             commandLineParser: CommandLineParser = CommandLineParser(),
         ): CompilerCommandParser =
-            GccCommandParser(pathMapper, commandLineParser)
+            ClangCommandParser(pathMapper, commandLineParser)
     }
 }

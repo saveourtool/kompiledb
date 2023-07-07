@@ -1,4 +1,4 @@
-package com.saveourtool.kompiledb.core.compiler.gcc
+package com.saveourtool.kompiledb.core.compiler.clang
 
 import com.saveourtool.kompiledb.core.CompilationCommand
 import com.saveourtool.kompiledb.core.EnvPath
@@ -21,9 +21,9 @@ import kotlin.io.path.isDirectory
 import kotlin.io.path.readText
 
 /**
- * Compilation command parser specific for _GCC_ and _Clang_.
+ * Compilation command parser specific for _Clang_ and _GCC_.
  */
-internal class GccCommandParser(
+internal class ClangCommandParser(
     override val pathMapper: PathMapper,
     commandLineParser: CommandLineParser,
 ) : CompilerCommandParser,
