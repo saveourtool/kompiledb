@@ -2,7 +2,9 @@ package com.saveourtool.kompiledb.core.compiler
 
 import com.saveourtool.kompiledb.core.CompilationCommand
 import com.saveourtool.kompiledb.core.EnvPath
+import com.saveourtool.kompiledb.core.EnvPath.Companion.EMPTY
 import com.saveourtool.kompiledb.core.lang.C
+import com.saveourtool.kompiledb.core.lang.Cxx
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
@@ -361,16 +363,16 @@ class CompilerCommandParserTest {
     fun `dash-x switch should get parsed (C)`() {
         @Language("sh")
         val commands = sequenceOf(
-            "clang -xc -c file.c",
-            "clang -x c -c file.c",
+            "clang -xc -c file",
+            "clang -x c -c file",
         )
 
         assertAll(
             commands
                 .map { command ->
                     CompilationCommand(
-                        directory = EnvPath.EMPTY,
-                        file = EnvPath("file.c"),
+                        directory = EMPTY,
+                        file = EnvPath("file"),
                         command = command,
                     )
                 }
@@ -388,17 +390,129 @@ class CompilerCommandParserTest {
     fun `dash-x switch should get parsed, the last occurrence taking precedence (C)`() {
         @Language("sh")
         val commands = sequenceOf(
-            "clang -xc++ -xc -c file.c",
-            "clang -xc++ -x c -c file.c",
-            "clang -x c++ -xc -c file.c",
-            "clang -x c++ -x c -c file.c",
+            "clang -xc++ -xc -c file",
+            "clang -xc++ -x c -c file",
+            "clang -x c++ -xc -c file",
+            "clang -x c++ -x c -c file",
         )
 
         assertAll(
             commands
                 .map { command ->
                     CompilationCommand(
-                        directory = EnvPath.EMPTY,
+                        directory = EMPTY,
+                        file = EnvPath("file"),
+                        command = command,
+                    )
+                }
+                .map { command ->
+                    CompilerCommandParser().parse(Path(""), command)
+                }
+                .map { command ->
+                    { command.language shouldBe C }.lazyUnit
+                }
+                .toList()
+        )
+    }
+
+    @Test
+    fun `dash-x switch should get parsed (C++)`() {
+        @Language("sh")
+        val commands = sequenceOf(
+            "clang -xc++ -c file",
+            "clang -x c++ -c file",
+        )
+
+        assertAll(
+            commands
+                .map { command ->
+                    CompilationCommand(
+                        directory = EMPTY,
+                        file = EnvPath("file"),
+                        command = command,
+                    )
+                }
+                .map { command ->
+                    CompilerCommandParser().parse(Path(""), command)
+                }
+                .map { command ->
+                    { command.language shouldBe Cxx }.lazyUnit
+                }
+                .toList()
+        )
+    }
+
+    @Test
+    fun `dash-x switch should get parsed, the last occurrence taking precedence (C++)`() {
+        @Language("sh")
+        val commands = sequenceOf(
+            "clang -xc -xc++ -c file",
+            "clang -xc -x c++ -c file",
+            "clang -x c -xc++ -c file",
+            "clang -x c -x c++ -c file",
+        )
+
+        assertAll(
+            commands
+                .map { command ->
+                    CompilationCommand(
+                        directory = EMPTY,
+                        file = EnvPath("file"),
+                        command = command,
+                    )
+                }
+                .map { command ->
+                    CompilerCommandParser().parse(Path(""), command)
+                }
+                .map { command ->
+                    { command.language shouldBe Cxx }.lazyUnit
+                }
+                .toList()
+        )
+    }
+
+    @Test
+    fun `dash-x switch should get parsed (custom)`() {
+        @Language("sh")
+        val commands = sequenceOf(
+            "clang -xobjective-c -c file",
+            "clang -x objective-c -c file",
+        )
+
+        assertAll(
+            commands
+                .map { command ->
+                    CompilationCommand(
+                        directory = EMPTY,
+                        file = EnvPath("file"),
+                        command = command,
+                    )
+                }
+                .map { command ->
+                    CompilerCommandParser().parse(Path(""), command)
+                }
+                .map { command ->
+                    { command.language.name shouldBeEqual "objective-c" }.lazyUnit
+                }
+                .toList()
+        )
+    }
+
+    @Test
+    fun `language should get inferred from the extension if unspecified (C)`() {
+        @Language("sh")
+        val commands = sequenceOf(
+            "clang -c file.c",
+            "clang++ -c file.c",
+            "gcc -c file.c",
+            "g++ -c file.c",
+        )
+
+        assertAll(
+            commands
+                .map { command ->
+                    CompilationCommand(
+                        directory = EMPTY,
                         file = EnvPath("file.c"),
                         command = command,
                     )
@@ -408,6 +522,151 @@ class CompilerCommandParserTest {
                 }
                 .map { command ->
                     { command.language shouldBe C }.lazyUnit
+                }
+                .toList()
+        )
+    }
+
+    @Test
+    fun `language should get inferred from the extension if unspecified (C++)`() {
+        @Language("sh")
+        val commands = sequenceOf(
+            "clang -c file.cc",
+            "clang++ -c file.cc",
+            "gcc -c file.cc",
+            "g++ -c file.cc",
+        )
+
+        assertAll(
+            commands
+                .map { command ->
+                    CompilationCommand(
+                        directory = EMPTY,
+                        file = EnvPath("file.cc"),
+                        command = command,
+                    )
+                }
+                .map { command ->
+                    CompilerCommandParser().parse(Path(""), command)
+                }
+                .map { command ->
+                    { command.language shouldBe Cxx }.lazyUnit
+                }
+                .toList()
+        )
+    }
+
+    @Test
+    fun `language should get inferred from the extension if unspecified (custom)`() {
+        @Language("sh")
+        val commands = sequenceOf(
+            "clang -c file.f77",
+            "clang++ -c file.f77",
+            "gcc -c file.f77",
+            "g++ -c file.f77",
+        )
+
+        assertAll(
+            commands
+                .map { command ->
+                    CompilationCommand(
+                        directory = EMPTY,
+                        file = EnvPath("file.f77"),
+                        command = command,
+                    )
+                }
+                .map { command ->
+                    CompilerCommandParser().parse(Path(""), command)
+                }
+                .map { command ->
+                    { command.language.name shouldBeEqual "f77" }.lazyUnit
+                }
+                .toList()
+        )
+    }
+
+    @Test
+    fun `dash-x none should be ignored (C)`() {
+        @Language("sh")
+        val commands = sequenceOf(
+            "clang -x none -c file.c",
+            "clang++ -xnone -c file.c",
+            "gcc -x none -c file.c",
+            "g++ -xnone -c file.c",
+        )
+
+        assertAll(
+            commands
+                .map { command ->
+                    CompilationCommand(
+                        directory = EMPTY,
+                        file = EnvPath("file.c"),
+                        command = command,
+                    )
+                }
+                .map { command ->
+                    CompilerCommandParser().parse(Path(""), command)
+                }
+                .map { command ->
+                    { command.language shouldBe C }.lazyUnit
+                }
+                .toList()
+        )
+    }
+
+    @Test
+    fun `dash-x none should be ignored (C++)`() {
+        @Language("sh")
+        val commands = sequenceOf(
+            "clang -x none -c file.cc",
+            "clang++ -xnone -c file.cc",
+            "gcc -x none -c file.cc",
+            "g++ -xnone -c file.cc",
+        )
+
+        assertAll(
+            commands
+                .map { command ->
+                    CompilationCommand(
+                        directory = EMPTY,
+                        file = EnvPath("file.cc"),
+                        command = command,
+                    )
+                }
+                .map { command ->
+                    CompilerCommandParser().parse(Path(""), command)
+                }
+                .map { command ->
+                    { command.language shouldBe Cxx }.lazyUnit
+                }
+                .toList()
+        )
+    }
+
+    @Test
+    fun `language should be unknown if no extension`() {
+        @Language("sh")
+        val commands = sequenceOf(
+            "clang -c file",
+            "clang++ -c file",
+            "gcc -c file",
+            "g++ -c file",
+        )
+
+        assertAll(
+            commands
+                .map { command ->
+                    CompilationCommand(
+                        directory = EMPTY,
+                        file = EnvPath("file"),
+                        command = command,
+                    )
+                }
+                .map { command ->
+                    CompilerCommandParser().parse(Path(""), command)
+                }
+                .map { command ->
+                    { command.language.name shouldBeEqual "unknown" }.lazyUnit
                 }
                 .toList()
         )

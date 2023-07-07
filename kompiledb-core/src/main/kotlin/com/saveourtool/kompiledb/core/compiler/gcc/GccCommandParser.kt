@@ -8,10 +8,15 @@ import com.saveourtool.kompiledb.core.io.Arg
 import com.saveourtool.kompiledb.core.io.CommandLineParser
 import com.saveourtool.kompiledb.core.io.PathMapper
 import com.saveourtool.kompiledb.core.io.PathMapperScope
+import com.saveourtool.kompiledb.core.io.mappers.LocalPathMapper.toLocalPath
+import com.saveourtool.kompiledb.core.lang.C
+import com.saveourtool.kompiledb.core.lang.Cxx
 import com.saveourtool.kompiledb.core.lang.Language
+import com.saveourtool.kompiledb.core.lang.Language.Companion.UNKNOWN
 import java.nio.file.NoSuchFileException
 import java.nio.file.Path
 import kotlin.Result.Companion.failure
+import kotlin.io.path.extension
 import kotlin.io.path.isDirectory
 import kotlin.io.path.readText
 
@@ -92,7 +97,12 @@ internal class GccCommandParser(
             .collectDefinedMacrosTo(definedMacros)
             .collectUndefinedMacrosTo(undefinedMacros)
             .collectLanguage {
-                language = it
+                /*
+                 * `-x none` has a special meaning.
+                 */
+                if (it.name != "none") {
+                    language = it
+                }
             }
             .toList()
 
@@ -101,7 +111,7 @@ internal class GccCommandParser(
             directory = command.directory,
             file = command.file,
             compiler = compiler,
-            language = language ?: Language("c++"),
+            language = language ?: command.file.language,
             includePaths = includePaths,
             definedMacros = definedMacros,
             undefinedMacros = undefinedMacros,
@@ -136,6 +146,10 @@ internal class GccCommandParser(
              */
             this(resolved.readText().trimEnd()).asSequence()
         }
+
+    private val EnvPath.language: Language
+        get() =
+            toLocalPath().getOrNull()?.language ?: UNKNOWN
 
     private companion object {
         /**
@@ -224,6 +238,15 @@ internal class GccCommandParser(
                     else -> message
                 }
             }
+
+        private val Path.language: Language
+            get() =
+                when (val extension = extension) {
+                    in C_EXTENSIONS -> C
+                    in CXX_EXTENSIONS -> Cxx
+                    "" -> UNKNOWN
+                    else -> Language(extension)
+                }
 
         private fun Sequence<Arg>.collectIncludePathsTo(includePaths: MutableMap<String, MutableList<EnvPath>>): Sequence<Arg> =
             sequence {

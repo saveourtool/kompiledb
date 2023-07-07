@@ -25,6 +25,8 @@ sealed interface Language {
          */
         internal const val LANG_CXX = "c++"
 
+        internal val UNKNOWN = Language("unknown")
+
         /**
          * Converts [language] to a [Language] instance.
          */
