@@ -3,11 +3,15 @@ package com.saveourtool.kompiledb.core.compiler
 import com.saveourtool.kompiledb.core.CompilationCommand
 import com.saveourtool.kompiledb.core.EnvPath
 import com.saveourtool.kompiledb.core.EnvPath.Companion.EMPTY
+import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths.COMPILER_BUILTIN_INCLUDES
+import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths.STANDARD_CXX_LIBRARY
+import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths.STANDARD_C_LIBRARY
 import com.saveourtool.kompiledb.core.lang.C
 import com.saveourtool.kompiledb.core.lang.Cxx
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.collections.shouldContainOnly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.maps.shouldContainExactly
@@ -681,6 +685,223 @@ class CompilerCommandParserTest {
         )
 
         CompilerCommandParser().parse(Path(""), command).languageStandard.shouldNotBeNull() shouldBeEqual "c++14"
+    }
+
+    @Test
+    fun `default standard include paths (C)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "clang -xc -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldContainExactlyInAnyOrder(
+            STANDARD_C_LIBRARY,
+            COMPILER_BUILTIN_INCLUDES,
+        )
+    }
+
+    @Test
+    fun `default standard include paths (C++)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "clang -xc++ -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldContainExactlyInAnyOrder(
+            STANDARD_C_LIBRARY,
+            STANDARD_CXX_LIBRARY,
+            COMPILER_BUILTIN_INCLUDES,
+        )
+    }
+
+    @Test
+    fun `nostdinc (Clang, C)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "clang -xc -nostdinc -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldBeEmpty()
+    }
+
+    @Test
+    fun `nostdinc (GCC, C)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "gcc -xc -nostdinc -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldBeEmpty()
+    }
+
+    @Test
+    fun `nostdinc (Clang, C++)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "clang -xc++ -nostdinc -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldContainOnly(STANDARD_CXX_LIBRARY)
+    }
+
+    @Test
+    fun `nostdinc (GCC, C++)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "gcc -xc++ -nostdinc -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldBeEmpty()
+    }
+
+    @Test
+    fun `nostdinc++ (C)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "clang -xc -nostdinc++ -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldContainExactlyInAnyOrder(
+            STANDARD_C_LIBRARY,
+            COMPILER_BUILTIN_INCLUDES,
+        )
+    }
+
+    @Test
+    fun `nostdinc++ (C++)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "clang -xc++ -nostdinc++ -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldContainExactlyInAnyOrder(
+            STANDARD_C_LIBRARY,
+            COMPILER_BUILTIN_INCLUDES,
+        )
+    }
+
+    @Test
+    fun `nostdinc and nostdinc++ combined`() {
+        @Language("sh")
+        val commands = sequenceOf(
+            "clang -xc -nostdinc -nostdinc++ -c file",
+            "clang -xc++ -nostdinc -nostdinc++ -c file",
+            "clang -nostdinc -nostdinc++ -c file.c",
+            "clang -nostdinc -nostdinc++ -c file.cc",
+            "gcc -xc -nostdinc -nostdinc++ -c file",
+            "gcc -xc++ -nostdinc -nostdinc++ -c file",
+            "gcc -nostdinc -nostdinc++ -c file.c",
+            "gcc -nostdinc -nostdinc++ -c file.cc",
+        )
+
+        assertAll(
+            commands
+                .map { command ->
+                    CompilationCommand(
+                        directory = EMPTY,
+                        file = EnvPath("file"),
+                        command = command,
+                    )
+                }
+                .map { command ->
+                    CompilerCommandParser().parse(Path(""), command)
+                }
+                .map { command ->
+                    { command.standardIncludePaths.shouldBeEmpty() }.lazyUnit
+                }
+                .toList()
+        )
+    }
+
+    @Test
+    fun nostdlibinc() {
+        @Language("sh")
+        val commands = sequenceOf(
+            "clang -xc -nostdlibinc -c file",
+            "clang -xc++ -nostdlibinc -c file",
+            "clang -nostdlibinc -c file.c",
+            "clang -nostdlibinc -c file.cc",
+        )
+
+        assertAll(
+            commands
+                .map { command ->
+                    CompilationCommand(
+                        directory = EMPTY,
+                        file = EnvPath("file"),
+                        command = command,
+                    )
+                }
+                .map { command ->
+                    CompilerCommandParser().parse(Path(""), command)
+                }
+                .map { command ->
+                    { command.standardIncludePaths.shouldContainOnly(COMPILER_BUILTIN_INCLUDES) }
+                }
+                .toList()
+        )
+    }
+
+    @Test
+    fun `nobuiltininc (C)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "clang -xc -nobuiltininc -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldContainOnly(STANDARD_C_LIBRARY)
+    }
+
+    @Test
+    fun `nobuiltininc (C++)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "clang -xc++ -nobuiltininc -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldContainExactlyInAnyOrder(
+            STANDARD_C_LIBRARY,
+            STANDARD_CXX_LIBRARY,
+        )
+    }
+
+    @Test
+    fun `nostdlibinc and nobuiltininc combined`() {
+        @Language("sh")
+        val commands = sequenceOf(
+            "clang -xc -nostdlibinc -nobuiltininc -c file",
+            "clang -xc++ -nostdlibinc -nobuiltininc -c file",
+            "clang -nostdlibinc -nobuiltininc -c file.c",
+            "clang -nostdlibinc -nobuiltininc -c file.cc",
+        )
+
+        assertAll(
+            commands
+                .map { command ->
+                    CompilationCommand(
+                        directory = EMPTY,
+                        file = EnvPath("file"),
+                        command = command,
+                    )
+                }
+                .map { command ->
+                    CompilerCommandParser().parse(Path(""), command)
+                }
+                .map { command ->
+                    { command.standardIncludePaths.shouldBeEmpty() }.lazyUnit
+                }
+                .toList()
+        )
     }
 
     private companion object {

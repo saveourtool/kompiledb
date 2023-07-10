@@ -4,6 +4,10 @@ import com.saveourtool.kompiledb.core.CompilationCommand
 import com.saveourtool.kompiledb.core.EnvPath
 import com.saveourtool.kompiledb.core.compiler.CompilerCommandParser
 import com.saveourtool.kompiledb.core.compiler.ParsedCompilerCommand
+import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths
+import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths.COMPILER_BUILTIN_INCLUDES
+import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths.STANDARD_CXX_LIBRARY
+import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths.STANDARD_C_LIBRARY
 import com.saveourtool.kompiledb.core.io.Arg
 import com.saveourtool.kompiledb.core.io.CommandLineParser
 import com.saveourtool.kompiledb.core.io.PathMapper
@@ -15,6 +19,7 @@ import com.saveourtool.kompiledb.core.lang.Language
 import com.saveourtool.kompiledb.core.lang.Language.Companion.UNKNOWN
 import java.nio.file.NoSuchFileException
 import java.nio.file.Path
+import java.util.EnumSet
 import kotlin.Result.Companion.failure
 import kotlin.io.path.extension
 import kotlin.io.path.isDirectory
@@ -89,11 +94,13 @@ internal class ClangCommandParser(
         val includePaths = mutableMapOf<String, MutableList<EnvPath>>()
         val definedMacros = mutableMapOf<String, String>()
         val undefinedMacros = mutableListOf<String>()
-        var language: Language? = null
+        var languageOrNull: Language? = null
         var languageStandard: String? = null
+        val excludedStandardHeaders = mutableSetOf<String>()
 
         val ignoredArguments = arguments.asSequence()
             .drop(1)
+            .collectOptions(options = NOSTDINC_FAMILY, excludedStandardHeaders::add)
             .collectPrefixed("-std=") { _, optionValue ->
                 languageStandard = optionValue
             }
@@ -121,7 +128,7 @@ internal class ClangCommandParser(
                  * `-x none` has a special meaning.
                  */
                 if (optionValue != "none") {
-                    language = Language(optionValue)
+                    languageOrNull = Language(optionValue)
                 }
             }
             .collectOptionValues("-o") { _, _ ->
@@ -131,13 +138,16 @@ internal class ClangCommandParser(
             }
             .toList()
 
+        val language = languageOrNull ?: command.file.language
+
         return ParsedCompilerCommand(
             projectRoot = projectRoot,
             directory = command.directory,
             file = command.file,
             compiler = compiler,
-            language = language ?: command.file.language,
+            language = language,
             languageStandard = languageStandard,
+            standardIncludePaths = standardIncludePaths(compiler, language, excludedStandardHeaders),
             includePaths = includePaths,
             definedMacros = definedMacros,
             undefinedMacros = undefinedMacros,
@@ -173,9 +183,63 @@ internal class ClangCommandParser(
             this(resolved.readText().trimEnd()).asSequence()
         }
 
+    /**
+     * @see NOSTDINC_FAMILY
+     */
+    private fun standardIncludePaths(
+        compiler: EnvPath,
+        language: Language,
+        excludedStandardHeaders: Set<String>
+    ): Set<StandardIncludePaths> {
+        val standardIncludePaths = EnumSet.allOf(StandardIncludePaths::class.java)
+
+        if (language == C) {
+            /*
+             * No C++ headers when the language is C.
+             */
+            standardIncludePaths -= STANDARD_CXX_LIBRARY
+        }
+
+        if (NOSTDINC in excludedStandardHeaders) {
+            standardIncludePaths -= STANDARD_C_LIBRARY
+            standardIncludePaths -= COMPILER_BUILTIN_INCLUDES
+
+            when {
+                /*
+                 * Clang: retain C++ headers.
+                 */
+                compiler.isClang -> Unit
+
+                /*
+                 * Other compilers: `-nostdinc` means no standard headers at all.
+                 */
+                else -> standardIncludePaths -= STANDARD_CXX_LIBRARY
+            }
+        }
+
+        if (NOSTDINCXX in excludedStandardHeaders) {
+            standardIncludePaths -= STANDARD_CXX_LIBRARY
+        }
+
+        if (NOSTDLIBINC in excludedStandardHeaders) {
+            standardIncludePaths -= STANDARD_C_LIBRARY
+            standardIncludePaths -= STANDARD_CXX_LIBRARY
+        }
+
+        if (NOBUILTININC in excludedStandardHeaders) {
+            standardIncludePaths -= COMPILER_BUILTIN_INCLUDES
+        }
+
+        return standardIncludePaths
+    }
+
     private val EnvPath.language: Language
         get() =
             toLocalPath().getOrNull()?.language ?: UNKNOWN
+
+    private val EnvPath.isClang: Boolean
+        get() =
+            "clang" in name
 
     private companion object {
         /**
@@ -183,6 +247,43 @@ internal class ClangCommandParser(
          * files.
          */
         private const val RESPONSE_FILE = '@'
+
+        /**
+         * `-nostdinc`: **exclude** all the headers (GCC), or **retain** only
+         * the standard C++ headers for C++ (Clang).
+         *
+         * @see NOSTDINCXX
+         * @see NOSTDLIBINC
+         * @see NOBUILTININC
+         */
+        private const val NOSTDINC = "-nostdinc"
+
+        /**
+         * `-nostdinc++`: **exclude** the standard C++ headers.
+         *
+         * @see NOSTDINC
+         * @see NOSTDLIBINC
+         * @see NOBUILTININC
+         */
+        private const val NOSTDINCXX = "-nostdinc++"
+
+        /**
+         * `-nostdlibinc`: **retain** only the compiler built-in headers (Clang).
+         *
+         * @see NOSTDINC
+         * @see NOSTDINCXX
+         * @see NOBUILTININC
+         */
+        private const val NOSTDLIBINC = "-nostdlibinc"
+
+        /**
+         * `-nobuiltininc`: **exclude** the compiler built-in headers (Clang).
+         *
+         * @see NOSTDINC
+         * @see NOSTDINCXX
+         * @see NOSTDLIBINC
+         */
+        private const val NOBUILTININC = "-nobuiltininc"
 
         /**
          * See [3.16 Options for Directory Search](https://gcc.gnu.org/onlinedocs/gcc/Directory-Options.html)
@@ -232,6 +333,13 @@ internal class ClangCommandParser(
             "cxx",
         )
 
+        private val NOSTDINC_FAMILY: Array<out String> = arrayOf(
+            NOSTDINC,
+            NOSTDINCXX,
+            NOSTDLIBINC,
+            NOBUILTININC,
+        )
+
         private val Arg.isResponseFile: Boolean
             get() =
                 isNotEmpty() && this[0] == RESPONSE_FILE
@@ -255,10 +363,32 @@ internal class ClangCommandParser(
                 }
 
         /**
+         * Collects options which don't accept any arguments (values).
+         *
+         * @see collectOptionValues
+         * @see collectPrefixed
+         */
+        private fun Sequence<Arg>.collectOptions(
+            vararg options: String,
+            consumeOption: (option: String) -> Unit,
+        ): Sequence<Arg> =
+            filter { option ->
+                when (option) {
+                    in options -> {
+                        consumeOption(option)
+                        false
+                    }
+
+                    else -> true
+                }
+            }
+
+        /**
          * Collects options and their values which can be either a single
          * argument (`-Ifoo`) or two adjacent arguments (`-I foo`).
          *
          * @see collectPrefixed
+         * @see collectOptions
          */
         private fun Sequence<Arg>.collectOptionValues(
             vararg options: String,
@@ -323,6 +453,7 @@ internal class ClangCommandParser(
          * argument (`-std=gnu99`).
          *
          * @see collectOptionValues
+         * @see collectOptions
          */
         private fun Sequence<Arg>.collectPrefixed(
             vararg options: String,
