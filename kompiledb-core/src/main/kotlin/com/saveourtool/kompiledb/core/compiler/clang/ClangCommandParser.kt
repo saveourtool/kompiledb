@@ -5,7 +5,7 @@ import com.saveourtool.kompiledb.core.EnvPath
 import com.saveourtool.kompiledb.core.compiler.CompilerCommandParser
 import com.saveourtool.kompiledb.core.compiler.ParsedCompilerCommand
 import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths
-import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths.STANDARD_CXX_LIBRARY
+import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths.*
 import com.saveourtool.kompiledb.core.io.Arg
 import com.saveourtool.kompiledb.core.io.CommandLineParser
 import com.saveourtool.kompiledb.core.io.PathMapper
@@ -143,6 +143,22 @@ internal class ClangCommandParser(
              */
             standardIncludePaths -= STANDARD_CXX_LIBRARY
         }
+        if ("-nostdinc" in excludedStandardHeaders) {
+            standardIncludePaths -= STANDARD_C_LIBRARY
+            standardIncludePaths -= COMPILER_BUILTIN_INCLUDES
+
+            when {
+                /*
+                 * Clang: retain C++ headers.
+                 */
+                compiler.isClang -> Unit
+
+                /*
+                 * Other compilers: `-nostdinc` means no standard headers at all.
+                 */
+                else -> standardIncludePaths -= STANDARD_CXX_LIBRARY
+            }
+        }
 
         return ParsedCompilerCommand(
             projectRoot = projectRoot,
@@ -190,6 +206,10 @@ internal class ClangCommandParser(
     private val EnvPath.language: Language
         get() =
             toLocalPath().getOrNull()?.language ?: UNKNOWN
+
+    private val EnvPath.isClang: Boolean
+        get() =
+            "clang" in name
 
     private companion object {
         /**

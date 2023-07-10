@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Contract
 import java.nio.file.Path
 import kotlin.Result.Companion.success
 import kotlin.io.path.div
+import kotlin.io.path.name
 
 /**
  * A set of extensions to [EnvPath] which are not dependent on the
@@ -15,6 +16,19 @@ interface PathMapperScope {
      * The path mapper which performs path translation.
      */
     val pathMapper: PathMapper
+
+    /**
+     * @return the name of the file or directory denoted by this path as a
+     *   string, or an empty string if this path has zero path elements, or path
+     *   mapping fails.
+     * @see Path.name
+     * @see Path.getFileName
+     */
+    val EnvPath.name: String
+        get() =
+            with(pathMapper) {
+                toLocalPath().map(Path::name).getOrNull().orEmpty()
+            }
 
     /**
      * Resolve the given [other] path against this path.

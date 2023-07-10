@@ -11,6 +11,7 @@ import com.saveourtool.kompiledb.core.lang.Cxx
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotest.matchers.collections.shouldContainOnly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.maps.shouldContainExactly
@@ -713,6 +714,50 @@ class CompilerCommandParserTest {
             STANDARD_CXX_LIBRARY,
             COMPILER_BUILTIN_INCLUDES,
         )
+    }
+
+    @Test
+    fun `nostdinc (Clang, C)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "clang -xc -nostdinc -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldBeEmpty()
+    }
+
+    @Test
+    fun `nostdinc (GCC, C)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "gcc -xc -nostdinc -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldBeEmpty()
+    }
+
+    @Test
+    fun `nostdinc (Clang, C++)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "clang -xc++ -nostdinc -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldContainOnly(STANDARD_CXX_LIBRARY)
+    }
+
+    @Test
+    fun `nostdinc (GCC, C++)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "gcc -xc++ -nostdinc -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldBeEmpty()
     }
 
     private companion object {
