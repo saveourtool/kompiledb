@@ -159,6 +159,9 @@ internal class ClangCommandParser(
                 else -> standardIncludePaths -= STANDARD_CXX_LIBRARY
             }
         }
+        if ("-nostdinc++" in excludedStandardHeaders) {
+            standardIncludePaths -= STANDARD_CXX_LIBRARY
+        }
 
         return ParsedCompilerCommand(
             projectRoot = projectRoot,

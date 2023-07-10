@@ -760,6 +760,34 @@ class CompilerCommandParserTest {
         CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldBeEmpty()
     }
 
+    @Test
+    fun `nostdinc++ (C)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "clang -xc -nostdinc++ -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldContainExactlyInAnyOrder(
+            STANDARD_C_LIBRARY,
+            COMPILER_BUILTIN_INCLUDES,
+        )
+    }
+
+    @Test
+    fun `nostdinc++ (C++)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "clang -xc++ -nostdinc++ -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldContainExactlyInAnyOrder(
+            STANDARD_C_LIBRARY,
+            COMPILER_BUILTIN_INCLUDES,
+        )
+    }
+
     private companion object {
         private val <T> (() -> T).lazyUnit: () -> Unit
             get() = {
