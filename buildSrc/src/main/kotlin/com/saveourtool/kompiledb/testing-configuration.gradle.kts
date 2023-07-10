@@ -11,7 +11,11 @@ internal val libs = the<LibrariesForLibs>()
 
 testing {
     suites {
-        @Suppress("UNUSED_VARIABLE", "UnstableApiUsage")
+        @Suppress(
+            "UnstableApiUsage",
+            "KotlinRedundantDiagnosticSuppress",
+            "UNUSED_VARIABLE",
+        )
         val test by getting(JvmTestSuite::class) {
             useKotlinTest(libs.versions.kotlin)
         }
