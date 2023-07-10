@@ -817,6 +817,85 @@ class CompilerCommandParserTest {
         )
     }
 
+    @Test
+    fun nostdlibinc() {
+        @Language("sh")
+        val commands = sequenceOf(
+            "clang -xc -nostdlibinc -c file",
+            "clang -xc++ -nostdlibinc -c file",
+        )
+
+        assertAll(
+            commands
+                .map { command ->
+                    CompilationCommand(
+                        directory = EMPTY,
+                        file = EnvPath("file"),
+                        command = command,
+                    )
+                }
+                .map { command ->
+                    CompilerCommandParser().parse(Path(""), command)
+                }
+                .map { command ->
+                    { command.standardIncludePaths.shouldContainOnly(COMPILER_BUILTIN_INCLUDES) }
+                }
+                .toList()
+        )
+    }
+
+    @Test
+    fun `nobuiltininc (C)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "clang -xc -nobuiltininc -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldContainOnly(STANDARD_C_LIBRARY)
+    }
+
+    @Test
+    fun `nobuiltininc (C++)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "clang -xc++ -nobuiltininc -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldContainExactlyInAnyOrder(
+            STANDARD_C_LIBRARY,
+            STANDARD_CXX_LIBRARY,
+        )
+    }
+
+    @Test
+    fun `nostdlibinc and nobuiltininc combined`() {
+        @Language("sh")
+        val commands = sequenceOf(
+            "clang -xc -nostdlibinc -nobuiltininc -c file",
+            "clang -xc++ -nostdlibinc -nobuiltininc -c file",
+        )
+
+        assertAll(
+            commands
+                .map { command ->
+                    CompilationCommand(
+                        directory = EMPTY,
+                        file = EnvPath("file"),
+                        command = command,
+                    )
+                }
+                .map { command ->
+                    CompilerCommandParser().parse(Path(""), command)
+                }
+                .map { command ->
+                    { command.standardIncludePaths.shouldBeEmpty() }.lazyUnit
+                }
+                .toList()
+        )
+    }
+
     private companion object {
         private val <T> (() -> T).lazyUnit: () -> Unit
             get() = {
