@@ -4,6 +4,7 @@ import com.saveourtool.kompiledb.core.CompilationCommand
 import com.saveourtool.kompiledb.core.EnvPath
 import com.saveourtool.kompiledb.core.compiler.CompilerCommandParser
 import com.saveourtool.kompiledb.core.compiler.ParsedCompilerCommand
+import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths
 import com.saveourtool.kompiledb.core.io.Arg
 import com.saveourtool.kompiledb.core.io.CommandLineParser
 import com.saveourtool.kompiledb.core.io.PathMapper
@@ -15,6 +16,7 @@ import com.saveourtool.kompiledb.core.lang.Language
 import com.saveourtool.kompiledb.core.lang.Language.Companion.UNKNOWN
 import java.nio.file.NoSuchFileException
 import java.nio.file.Path
+import java.util.EnumSet
 import kotlin.Result.Companion.failure
 import kotlin.io.path.extension
 import kotlin.io.path.isDirectory
@@ -138,6 +140,7 @@ internal class ClangCommandParser(
             compiler = compiler,
             language = language ?: command.file.language,
             languageStandard = languageStandard,
+            standardIncludePaths = EnumSet.allOf(StandardIncludePaths::class.java),
             includePaths = includePaths,
             definedMacros = definedMacros,
             undefinedMacros = undefinedMacros,
