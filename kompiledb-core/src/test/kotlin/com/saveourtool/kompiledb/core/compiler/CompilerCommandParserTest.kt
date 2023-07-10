@@ -794,8 +794,12 @@ class CompilerCommandParserTest {
         val commands = sequenceOf(
             "clang -xc -nostdinc -nostdinc++ -c file",
             "clang -xc++ -nostdinc -nostdinc++ -c file",
+            "clang -nostdinc -nostdinc++ -c file.c",
+            "clang -nostdinc -nostdinc++ -c file.cc",
             "gcc -xc -nostdinc -nostdinc++ -c file",
             "gcc -xc++ -nostdinc -nostdinc++ -c file",
+            "gcc -nostdinc -nostdinc++ -c file.c",
+            "gcc -nostdinc -nostdinc++ -c file.cc",
         )
 
         assertAll(
@@ -823,6 +827,8 @@ class CompilerCommandParserTest {
         val commands = sequenceOf(
             "clang -xc -nostdlibinc -c file",
             "clang -xc++ -nostdlibinc -c file",
+            "clang -nostdlibinc -c file.c",
+            "clang -nostdlibinc -c file.cc",
         )
 
         assertAll(
@@ -875,6 +881,8 @@ class CompilerCommandParserTest {
         val commands = sequenceOf(
             "clang -xc -nostdlibinc -nobuiltininc -c file",
             "clang -xc++ -nostdlibinc -nobuiltininc -c file",
+            "clang -nostdlibinc -nobuiltininc -c file.c",
+            "clang -nostdlibinc -nobuiltininc -c file.cc",
         )
 
         assertAll(

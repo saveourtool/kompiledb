@@ -92,7 +92,7 @@ internal class ClangCommandParser(
         val includePaths = mutableMapOf<String, MutableList<EnvPath>>()
         val definedMacros = mutableMapOf<String, String>()
         val undefinedMacros = mutableListOf<String>()
-        var language: Language? = null
+        var languageOrNull: Language? = null
         var languageStandard: String? = null
         val excludedStandardHeaders = mutableSetOf<String>()
 
@@ -126,7 +126,7 @@ internal class ClangCommandParser(
                  * `-x none` has a special meaning.
                  */
                 if (optionValue != "none") {
-                    language = Language(optionValue)
+                    languageOrNull = Language(optionValue)
                 }
             }
             .collectOptionValues("-o") { _, _ ->
@@ -136,48 +136,16 @@ internal class ClangCommandParser(
             }
             .toList()
 
-        val standardIncludePaths = EnumSet.allOf(StandardIncludePaths::class.java)
-        if (language == C) {
-            /*
-             * No C++ headers when the language is C.
-             */
-            standardIncludePaths -= STANDARD_CXX_LIBRARY
-        }
-        if ("-nostdinc" in excludedStandardHeaders) {
-            standardIncludePaths -= STANDARD_C_LIBRARY
-            standardIncludePaths -= COMPILER_BUILTIN_INCLUDES
-
-            when {
-                /*
-                 * Clang: retain C++ headers.
-                 */
-                compiler.isClang -> Unit
-
-                /*
-                 * Other compilers: `-nostdinc` means no standard headers at all.
-                 */
-                else -> standardIncludePaths -= STANDARD_CXX_LIBRARY
-            }
-        }
-        if ("-nostdinc++" in excludedStandardHeaders) {
-            standardIncludePaths -= STANDARD_CXX_LIBRARY
-        }
-        if ("-nostdlibinc" in excludedStandardHeaders) {
-            standardIncludePaths -= STANDARD_C_LIBRARY
-            standardIncludePaths -= STANDARD_CXX_LIBRARY
-        }
-        if ("-nobuiltininc" in excludedStandardHeaders) {
-            standardIncludePaths -= COMPILER_BUILTIN_INCLUDES
-        }
+        val language = languageOrNull ?: command.file.language
 
         return ParsedCompilerCommand(
             projectRoot = projectRoot,
             directory = command.directory,
             file = command.file,
             compiler = compiler,
-            language = language ?: command.file.language,
+            language = language,
             languageStandard = languageStandard,
-            standardIncludePaths = standardIncludePaths,
+            standardIncludePaths = standardIncludePaths(compiler, language, excludedStandardHeaders),
             includePaths = includePaths,
             definedMacros = definedMacros,
             undefinedMacros = undefinedMacros,
@@ -212,6 +180,56 @@ internal class ClangCommandParser(
              */
             this(resolved.readText().trimEnd()).asSequence()
         }
+
+    /**
+     * @see NOSTDINC
+     */
+    private fun standardIncludePaths(
+        compiler: EnvPath,
+        language: Language,
+        excludedStandardHeaders: Set<String>
+    ): Set<StandardIncludePaths> {
+        val standardIncludePaths = EnumSet.allOf(StandardIncludePaths::class.java)
+
+        if (language == C) {
+            /*
+             * No C++ headers when the language is C.
+             */
+            standardIncludePaths -= STANDARD_CXX_LIBRARY
+        }
+
+        if ("-nostdinc" in excludedStandardHeaders) {
+            standardIncludePaths -= STANDARD_C_LIBRARY
+            standardIncludePaths -= COMPILER_BUILTIN_INCLUDES
+
+            when {
+                /*
+                 * Clang: retain C++ headers.
+                 */
+                compiler.isClang -> Unit
+
+                /*
+                 * Other compilers: `-nostdinc` means no standard headers at all.
+                 */
+                else -> standardIncludePaths -= STANDARD_CXX_LIBRARY
+            }
+        }
+
+        if ("-nostdinc++" in excludedStandardHeaders) {
+            standardIncludePaths -= STANDARD_CXX_LIBRARY
+        }
+
+        if ("-nostdlibinc" in excludedStandardHeaders) {
+            standardIncludePaths -= STANDARD_C_LIBRARY
+            standardIncludePaths -= STANDARD_CXX_LIBRARY
+        }
+
+        if ("-nobuiltininc" in excludedStandardHeaders) {
+            standardIncludePaths -= COMPILER_BUILTIN_INCLUDES
+        }
+
+        return standardIncludePaths
+    }
 
     private val EnvPath.language: Language
         get() =
