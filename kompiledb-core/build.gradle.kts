@@ -16,15 +16,6 @@ dependencies {
     testFixturesApi(libs.kotest.assertions.json)
 }
 
-testing {
-    suites {
-        @Suppress("UNUSED_VARIABLE")
-        val test by getting(JvmTestSuite::class) {
-            useKotlinTest(libs.versions.kotlin)
-        }
-    }
-}
-
 tasks.withType<Test> {
     filter {
         includeTestsMatching("com.saveourtool.kompiledb.core.*")

@@ -15,15 +15,6 @@ dependencies {
     testImplementation(testFixtures(project(":kompiledb-core")))
 }
 
-testing {
-    suites {
-        @Suppress("UNUSED_VARIABLE")
-        val test by getting(JvmTestSuite::class) {
-            useKotlinTest(libs.versions.kotlin)
-        }
-    }
-}
-
 tasks.withType<Test> {
     filter {
         includeTestsMatching("com.saveourtool.kompiledb.gson.*")
