@@ -788,6 +788,35 @@ class CompilerCommandParserTest {
         )
     }
 
+    @Test
+    fun `nostdinc and nostdinc++ combined`() {
+        @Language("sh")
+        val commands = sequenceOf(
+            "clang -xc -nostdinc -nostdinc++ -c file",
+            "clang -xc++ -nostdinc -nostdinc++ -c file",
+            "gcc -xc -nostdinc -nostdinc++ -c file",
+            "gcc -xc++ -nostdinc -nostdinc++ -c file",
+        )
+
+        assertAll(
+            commands
+                .map { command ->
+                    CompilationCommand(
+                        directory = EMPTY,
+                        file = EnvPath("file"),
+                        command = command,
+                    )
+                }
+                .map { command ->
+                    CompilerCommandParser().parse(Path(""), command)
+                }
+                .map { command ->
+                    { command.standardIncludePaths.shouldBeEmpty() }.lazyUnit
+                }
+                .toList()
+        )
+    }
+
     private companion object {
         private val <T> (() -> T).lazyUnit: () -> Unit
             get() = {
