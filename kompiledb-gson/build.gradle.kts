@@ -1,12 +1,7 @@
-@file:Suppress("UnstableApiUsage")
-
 plugins {
+    id("com.saveourtool.kompiledb.maven-repo-configuration")
     id("com.saveourtool.kompiledb.kotlin-configuration")
     id("com.saveourtool.kompiledb.testing-configuration")
-}
-
-repositories {
-    mavenCentral()
 }
 
 dependencies {
