@@ -1,10 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    kotlin("jvm")
+    id("com.saveourtool.kompiledb.kotlin-configuration")
+    id("com.saveourtool.kompiledb.testing-configuration")
 }
 
 repositories {
@@ -17,15 +15,6 @@ dependencies {
     testImplementation(testFixtures(project(":kompiledb-core")))
 }
 
-java {
-    withJavadocJar()
-    withSourcesJar()
-}
-
-kotlin.jvmToolchain {
-    languageVersion.set(JavaLanguageVersion.of("8"))
-}
-
 testing {
     suites {
         @Suppress("UNUSED_VARIABLE")
@@ -35,20 +24,7 @@ testing {
     }
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
 tasks.withType<Test> {
-    testLogging {
-        showStandardStreams = true
-        showCauses = true
-        showExceptions = true
-        showStackTraces = true
-        exceptionFormat = FULL
-        events("passed", "skipped")
-    }
-
     filter {
         includeTestsMatching("com.saveourtool.kompiledb.gson.*")
         isFailOnNoMatchingTests = true
