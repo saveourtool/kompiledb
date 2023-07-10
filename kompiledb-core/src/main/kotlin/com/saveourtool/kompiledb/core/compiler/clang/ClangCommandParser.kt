@@ -5,7 +5,9 @@ import com.saveourtool.kompiledb.core.EnvPath
 import com.saveourtool.kompiledb.core.compiler.CompilerCommandParser
 import com.saveourtool.kompiledb.core.compiler.ParsedCompilerCommand
 import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths
-import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths.*
+import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths.COMPILER_BUILTIN_INCLUDES
+import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths.STANDARD_CXX_LIBRARY
+import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths.STANDARD_C_LIBRARY
 import com.saveourtool.kompiledb.core.io.Arg
 import com.saveourtool.kompiledb.core.io.CommandLineParser
 import com.saveourtool.kompiledb.core.io.PathMapper
@@ -98,7 +100,7 @@ internal class ClangCommandParser(
 
         val ignoredArguments = arguments.asSequence()
             .drop(1)
-            .collectOptions(options = NOSTDINC, excludedStandardHeaders::add)
+            .collectOptions(options = NOSTDINC_FAMILY, excludedStandardHeaders::add)
             .collectPrefixed("-std=") { _, optionValue ->
                 languageStandard = optionValue
             }
@@ -182,7 +184,7 @@ internal class ClangCommandParser(
         }
 
     /**
-     * @see NOSTDINC
+     * @see NOSTDINC_FAMILY
      */
     private fun standardIncludePaths(
         compiler: EnvPath,
@@ -198,7 +200,7 @@ internal class ClangCommandParser(
             standardIncludePaths -= STANDARD_CXX_LIBRARY
         }
 
-        if ("-nostdinc" in excludedStandardHeaders) {
+        if (NOSTDINC in excludedStandardHeaders) {
             standardIncludePaths -= STANDARD_C_LIBRARY
             standardIncludePaths -= COMPILER_BUILTIN_INCLUDES
 
@@ -215,16 +217,16 @@ internal class ClangCommandParser(
             }
         }
 
-        if ("-nostdinc++" in excludedStandardHeaders) {
+        if (NOSTDINCXX in excludedStandardHeaders) {
             standardIncludePaths -= STANDARD_CXX_LIBRARY
         }
 
-        if ("-nostdlibinc" in excludedStandardHeaders) {
+        if (NOSTDLIBINC in excludedStandardHeaders) {
             standardIncludePaths -= STANDARD_C_LIBRARY
             standardIncludePaths -= STANDARD_CXX_LIBRARY
         }
 
-        if ("-nobuiltininc" in excludedStandardHeaders) {
+        if (NOBUILTININC in excludedStandardHeaders) {
             standardIncludePaths -= COMPILER_BUILTIN_INCLUDES
         }
 
@@ -245,6 +247,43 @@ internal class ClangCommandParser(
          * files.
          */
         private const val RESPONSE_FILE = '@'
+
+        /**
+         * `-nostdinc`: **exclude** all the headers (GCC), or **retain** only
+         * the standard C++ headers for C++ (Clang).
+         *
+         * @see NOSTDINCXX
+         * @see NOSTDLIBINC
+         * @see NOBUILTININC
+         */
+        private const val NOSTDINC = "-nostdinc"
+
+        /**
+         * `-nostdinc++`: **exclude** the standard C++ headers.
+         *
+         * @see NOSTDINC
+         * @see NOSTDLIBINC
+         * @see NOBUILTININC
+         */
+        private const val NOSTDINCXX = "-nostdinc++"
+
+        /**
+         * `-nostdlibinc`: **retain** only the compiler built-in headers (Clang).
+         *
+         * @see NOSTDINC
+         * @see NOSTDINCXX
+         * @see NOBUILTININC
+         */
+        private const val NOSTDLIBINC = "-nostdlibinc"
+
+        /**
+         * `-nobuiltininc`: **exclude** the compiler built-in headers (Clang).
+         *
+         * @see NOSTDINC
+         * @see NOSTDINCXX
+         * @see NOSTDLIBINC
+         */
+        private const val NOBUILTININC = "-nobuiltininc"
 
         /**
          * See [3.16 Options for Directory Search](https://gcc.gnu.org/onlinedocs/gcc/Directory-Options.html)
@@ -294,20 +333,11 @@ internal class ClangCommandParser(
             "cxx",
         )
 
-        /**
-         * - `-nostdinc`: **exclude** all the headers (GCC),
-         *     or **retain** only the standard C++ headers for C++ (Clang)
-         * - `-nostdinc++`: **exclude** the standard C++ headers.
-         * - `-nostdlibinc`: **retain** only the compiler built-in headers (Clang).
-         * - `-nobuiltininc`: **exclude** the compiler built-in headers (Clang),
-         *     but **retain** either the standard C, or both C and C++ headers,
-         *     depending on the language.
-         */
-        private val NOSTDINC: Array<out String> = arrayOf(
-            "-nostdinc",
-            "-nostdinc++",
-            "-nostdlibinc",
-            "-nobuiltininc",
+        private val NOSTDINC_FAMILY: Array<out String> = arrayOf(
+            NOSTDINC,
+            NOSTDINCXX,
+            NOSTDLIBINC,
+            NOBUILTININC,
         )
 
         private val Arg.isResponseFile: Boolean
