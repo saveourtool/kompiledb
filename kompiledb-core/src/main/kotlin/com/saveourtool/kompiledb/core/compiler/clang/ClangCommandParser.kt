@@ -5,6 +5,7 @@ import com.saveourtool.kompiledb.core.EnvPath
 import com.saveourtool.kompiledb.core.compiler.CompilerCommandParser
 import com.saveourtool.kompiledb.core.compiler.ParsedCompilerCommand
 import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths
+import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths.STANDARD_CXX_LIBRARY
 import com.saveourtool.kompiledb.core.io.Arg
 import com.saveourtool.kompiledb.core.io.CommandLineParser
 import com.saveourtool.kompiledb.core.io.PathMapper
@@ -93,9 +94,11 @@ internal class ClangCommandParser(
         val undefinedMacros = mutableListOf<String>()
         var language: Language? = null
         var languageStandard: String? = null
+        val excludedStandardHeaders = mutableSetOf<String>()
 
         val ignoredArguments = arguments.asSequence()
             .drop(1)
+            .collectOptions(options = NOSTDINC, excludedStandardHeaders::add)
             .collectPrefixed("-std=") { _, optionValue ->
                 languageStandard = optionValue
             }
@@ -133,6 +136,14 @@ internal class ClangCommandParser(
             }
             .toList()
 
+        val standardIncludePaths = EnumSet.allOf(StandardIncludePaths::class.java)
+        if (language == C) {
+            /*
+             * No C++ headers when the language is C.
+             */
+            standardIncludePaths -= STANDARD_CXX_LIBRARY
+        }
+
         return ParsedCompilerCommand(
             projectRoot = projectRoot,
             directory = command.directory,
@@ -140,7 +151,7 @@ internal class ClangCommandParser(
             compiler = compiler,
             language = language ?: command.file.language,
             languageStandard = languageStandard,
-            standardIncludePaths = EnumSet.allOf(StandardIncludePaths::class.java),
+            standardIncludePaths = standardIncludePaths,
             includePaths = includePaths,
             definedMacros = definedMacros,
             undefinedMacros = undefinedMacros,
@@ -274,10 +285,32 @@ internal class ClangCommandParser(
                 }
 
         /**
+         * Collects options which don't accept any arguments (values).
+         *
+         * @see collectOptionValues
+         * @see collectPrefixed
+         */
+        private fun Sequence<Arg>.collectOptions(
+            vararg options: String,
+            consumeOption: (option: String) -> Unit,
+        ): Sequence<Arg> =
+            filter { option ->
+                when (option) {
+                    in options -> {
+                        consumeOption(option)
+                        false
+                    }
+
+                    else -> true
+                }
+            }
+
+        /**
          * Collects options and their values which can be either a single
          * argument (`-Ifoo`) or two adjacent arguments (`-I foo`).
          *
          * @see collectPrefixed
+         * @see collectOptions
          */
         private fun Sequence<Arg>.collectOptionValues(
             vararg options: String,
@@ -342,6 +375,7 @@ internal class ClangCommandParser(
          * argument (`-std=gnu99`).
          *
          * @see collectOptionValues
+         * @see collectOptions
          */
         private fun Sequence<Arg>.collectPrefixed(
             vararg options: String,

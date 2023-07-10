@@ -3,6 +3,9 @@ package com.saveourtool.kompiledb.core.compiler
 import com.saveourtool.kompiledb.core.CompilationCommand
 import com.saveourtool.kompiledb.core.EnvPath
 import com.saveourtool.kompiledb.core.EnvPath.Companion.EMPTY
+import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths.COMPILER_BUILTIN_INCLUDES
+import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths.STANDARD_CXX_LIBRARY
+import com.saveourtool.kompiledb.core.compiler.StandardIncludePaths.STANDARD_C_LIBRARY
 import com.saveourtool.kompiledb.core.lang.C
 import com.saveourtool.kompiledb.core.lang.Cxx
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -681,6 +684,35 @@ class CompilerCommandParserTest {
         )
 
         CompilerCommandParser().parse(Path(""), command).languageStandard.shouldNotBeNull() shouldBeEqual "c++14"
+    }
+
+    @Test
+    fun `default standard include paths (C)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "clang -xc -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldContainExactlyInAnyOrder(
+            STANDARD_C_LIBRARY,
+            COMPILER_BUILTIN_INCLUDES,
+        )
+    }
+
+    @Test
+    fun `default standard include paths (C++)`() {
+        val command = CompilationCommand(
+            directory = EMPTY,
+            file = EnvPath("file.cc"),
+            command = "clang -xc++ -c file",
+        )
+
+        CompilerCommandParser().parse(Path(""), command).standardIncludePaths.shouldContainExactlyInAnyOrder(
+            STANDARD_C_LIBRARY,
+            STANDARD_CXX_LIBRARY,
+            COMPILER_BUILTIN_INCLUDES,
+        )
     }
 
     private companion object {
