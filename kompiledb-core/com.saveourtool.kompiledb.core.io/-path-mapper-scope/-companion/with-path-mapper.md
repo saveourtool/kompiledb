@@ -1,16 +1,32 @@
-//[kompiledb-core](../../../../index.md)/[com.saveourtool.kompiledb.core.io](../../index.md)/[PathMapperScope](../index.md)/[Companion](index.md)/[withPathMapper](with-path-mapper.md)
+---
+title: withPathMapper
+---
+//[kompiledb-core](../../../../index.html)/[com.saveourtool.kompiledb.core.io](../../index.html)/[PathMapperScope](../index.html)/[Companion](index.html)/[withPathMapper](with-path-mapper.html)
+
+
 
 # withPathMapper
 
-[jvm]\
-fun &lt;[R](with-path-mapper.md)&gt; [withPathMapper](with-path-mapper.md)(pathMapper: [PathMapper](../../-path-mapper/index.md), block: [PathMapperScope](../index.md).() -&gt; [R](with-path-mapper.md)): [R](with-path-mapper.md)
 
-Calls the [block](with-path-mapper.md) with a [PathMapperScope](../index.md) as its receiver and returns its result.
+
+[jvm]\
+fun &lt;[R](with-path-mapper.html)&gt; [withPathMapper](with-path-mapper.html)(pathMapper: [PathMapper](../../-path-mapper/index.html), block: [PathMapperScope](../index.html).() -&gt; [R](with-path-mapper.html)): [R](with-path-mapper.html)
+
+
+
+Calls the [block](with-path-mapper.html) with a [PathMapperScope](../index.html) as its receiver and returns its result.
+
+
 
 #### Parameters
+
 
 jvm
 
 | | |
 |---|---|
-| pathMapper | the path mapper to produce the necessary [PathMapperScope](../index.md). |
+| pathMapper | the path mapper to produce the necessary [PathMapperScope](../index.html). |
+
+
+
+

@@ -1,8 +1,21 @@
-//[kompiledb-core](../../../index.md)/[com.saveourtool.kompiledb.core.lang](../index.md)/[C](index.md)/[name](name.md)
+---
+title: name
+---
+//[kompiledb-core](../../../index.html)/[com.saveourtool.kompiledb.core.lang](../index.html)/[C](index.html)/[name](name.html)
+
+
 
 # name
 
+
+
 [jvm]\
-open override val [name](name.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
+open override val [name](name.html): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
+
+
 
 The language in the format `-x` switch accepts (*Clang* and *GCC*).
+
+
+
+

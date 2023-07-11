@@ -1,14 +1,28 @@
-//[kompiledb-core](../../../index.md)/[com.saveourtool.kompiledb.core.compiler](../index.md)/[ParsedCompilerCommand](index.md)/[language](language.md)
+---
+title: language
+---
+//[kompiledb-core](../../../index.html)/[com.saveourtool.kompiledb.core.compiler](../index.html)/[ParsedCompilerCommand](index.html)/[language](language.html)
+
+
 
 # language
 
+
+
 [jvm]\
-val [language](language.md): [Language](../../com.saveourtool.kompiledb.core.lang/-language/index.md)
+val [language](language.html): [Language](../../com.saveourtool.kompiledb.core.lang/-language/index.html)
+
+
 
 #### Parameters
+
 
 jvm
 
 | | |
 |---|---|
 | language | the language of the source file (C, C++, or other). |
+
+
+
+

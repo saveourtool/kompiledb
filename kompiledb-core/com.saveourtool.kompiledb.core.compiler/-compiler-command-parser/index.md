@@ -1,20 +1,33 @@
-//[kompiledb-core](../../../index.md)/[com.saveourtool.kompiledb.core.compiler](../index.md)/[CompilerCommandParser](index.md)
+---
+title: CompilerCommandParser
+---
+//[kompiledb-core](../../../index.html)/[com.saveourtool.kompiledb.core.compiler](../index.html)/[CompilerCommandParser](index.html)
+
+
 
 # CompilerCommandParser
 
-[jvm]\
-fun interface [CompilerCommandParser](index.md)
 
-Parses a [CompilationCommand](../../com.saveourtool.kompiledb.core/-compilation-command/index.md) in a compiler-specific way.
+
+[jvm]\
+fun interface [CompilerCommandParser](index.html)
+
+Parses a [CompilationCommand](../../com.saveourtool.kompiledb.core/-compilation-command/index.html) in a compiler-specific way.
+
+
 
 ## Types
 
+
 | Name | Summary |
 |---|---|
-| [Companion](-companion/index.md) | [jvm]<br>object [Companion](-companion/index.md) |
+| [Companion](-companion/index.html) | [jvm]<br>object [Companion](-companion/index.html) |
+
 
 ## Functions
 
+
 | Name | Summary |
 |---|---|
-| [parse](parse.md) | [jvm]<br>abstract fun [parse](parse.md)(databasePath: [Path](https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html), command: [CompilationCommand](../../com.saveourtool.kompiledb.core/-compilation-command/index.md)): [ParsedCompilerCommand](../-parsed-compiler-command/index.md)<br>Parses the compilation command. |
+| [parse](parse.html) | [jvm]<br>abstract fun [parse](parse.html)(databasePath: [Path](https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html), command: [CompilationCommand](../../com.saveourtool.kompiledb.core/-compilation-command/index.html)): [ParsedCompilerCommand](../-parsed-compiler-command/index.html)<br>Parses the compilation command. |
+

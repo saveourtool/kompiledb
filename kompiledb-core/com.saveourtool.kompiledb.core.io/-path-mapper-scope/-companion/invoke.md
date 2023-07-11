@@ -1,8 +1,21 @@
-//[kompiledb-core](../../../../index.md)/[com.saveourtool.kompiledb.core.io](../../index.md)/[PathMapperScope](../index.md)/[Companion](index.md)/[invoke](invoke.md)
+---
+title: invoke
+---
+//[kompiledb-core](../../../../index.html)/[com.saveourtool.kompiledb.core.io](../../index.html)/[PathMapperScope](../index.html)/[Companion](index.html)/[invoke](invoke.html)
+
+
 
 # invoke
 
-[jvm]\
-operator fun [invoke](invoke.md)(pathMapper: [PathMapper](../../-path-mapper/index.md)): [PathMapperScope](../index.md)
 
-Creates a [PathMapperScope](../index.md) from a [pathMapper](invoke.md).
+
+[jvm]\
+operator fun [invoke](invoke.html)(pathMapper: [PathMapper](../../-path-mapper/index.html)): [PathMapperScope](../index.html)
+
+
+
+Creates a [PathMapperScope](../index.html) from a [pathMapper](invoke.html).
+
+
+
+

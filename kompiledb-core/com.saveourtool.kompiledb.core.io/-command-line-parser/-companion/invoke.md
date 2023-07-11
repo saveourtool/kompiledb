@@ -1,17 +1,34 @@
-//[kompiledb-core](../../../../index.md)/[com.saveourtool.kompiledb.core.io](../../index.md)/[CommandLineParser](../index.md)/[Companion](index.md)/[invoke](invoke.md)
+---
+title: invoke
+---
+//[kompiledb-core](../../../../index.html)/[com.saveourtool.kompiledb.core.io](../../index.html)/[CommandLineParser](../index.html)/[Companion](index.html)/[invoke](invoke.html)
+
+
 
 # invoke
 
+
+
 [jvm]\
-operator fun [invoke](invoke.md)(): [CommandLineParser](../index.md)
+operator fun [invoke](invoke.html)(): [CommandLineParser](../index.html)
+
+
 
 #### Return
 
+
+
 the default system-dependent command-line parser.
+
+
 
 #### See also
 
+
 | |
 |---|
-| [WindowsCommandLineParser](../../../com.saveourtool.kompiledb.core.io.parsers/-windows-command-line-parser/index.md) |
-| [PosixShellCommandLineParser](../../../com.saveourtool.kompiledb.core.io.parsers/-posix-shell-command-line-parser/index.md) |
+| [WindowsCommandLineParser](../../../com.saveourtool.kompiledb.core.io.parsers/-windows-command-line-parser/index.html) |
+| [PosixShellCommandLineParser](../../../com.saveourtool.kompiledb.core.io.parsers/-posix-shell-command-line-parser/index.html) |
+
+
+

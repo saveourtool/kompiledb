@@ -1,12 +1,23 @@
-//[kompiledb-core](../../../../index.md)/[com.saveourtool.kompiledb.core.compiler](../../index.md)/[CompilerCommandParser](../index.md)/[Companion](index.md)
+---
+title: Companion
+---
+//[kompiledb-core](../../../../index.html)/[com.saveourtool.kompiledb.core.compiler](../../index.html)/[CompilerCommandParser](../index.html)/[Companion](index.html)
+
+
 
 # Companion
 
+
+
 [jvm]\
-object [Companion](index.md)
+object [Companion](index.html)
+
+
 
 ## Functions
 
+
 | Name | Summary |
 |---|---|
-| [invoke](invoke.md) | [jvm]<br>operator fun [invoke](invoke.md)(pathMapper: [PathMapper](../../../com.saveourtool.kompiledb.core.io/-path-mapper/index.md) = LocalPathMapper, commandLineParser: [CommandLineParser](../../../com.saveourtool.kompiledb.core.io/-command-line-parser/index.md) = CommandLineParser()): [CompilerCommandParser](../index.md)<br>Creates the default compiler command parser. |
+| [invoke](invoke.html) | [jvm]<br>operator fun [invoke](invoke.html)(pathMapper: [PathMapper](../../../com.saveourtool.kompiledb.core.io/-path-mapper/index.html) = LocalPathMapper, commandLineParser: [CommandLineParser](../../../com.saveourtool.kompiledb.core.io/-command-line-parser/index.html) = CommandLineParser()): [CompilerCommandParser](../index.html)<br>Creates the default compiler command parser. |
+

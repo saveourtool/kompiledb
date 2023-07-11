@@ -1,8 +1,21 @@
-//[kompiledb-core](../../../index.md)/[com.saveourtool.kompiledb.core.io](../index.md)/[PathMapperScope](index.md)/[pathMapper](path-mapper.md)
+---
+title: pathMapper
+---
+//[kompiledb-core](../../../index.html)/[com.saveourtool.kompiledb.core.io](../index.html)/[PathMapperScope](index.html)/[pathMapper](path-mapper.html)
+
+
 
 # pathMapper
 
+
+
 [jvm]\
-abstract val [pathMapper](path-mapper.md): [PathMapper](../-path-mapper/index.md)
+abstract val [pathMapper](path-mapper.html): [PathMapper](../-path-mapper/index.html)
+
+
 
 The path mapper which performs path translation.
+
+
+
+

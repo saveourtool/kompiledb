@@ -1,14 +1,28 @@
-//[kompiledb-core](../../../index.md)/[com.saveourtool.kompiledb.core.compiler](../index.md)/[ParsedCompilerCommand](index.md)/[parseErrors](parse-errors.md)
+---
+title: parseErrors
+---
+//[kompiledb-core](../../../index.html)/[com.saveourtool.kompiledb.core.compiler](../index.html)/[ParsedCompilerCommand](index.html)/[parseErrors](parse-errors.html)
+
+
 
 # parseErrors
 
+
+
 [jvm]\
-val [parseErrors](parse-errors.md): [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)&lt;[String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)&gt;
+val [parseErrors](parse-errors.html): [List](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html)&lt;[String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)&gt;
+
+
 
 #### Parameters
+
 
 jvm
 
 | | |
 |---|---|
 | parseErrors | the list of parse errors encountered, if any. |
+
+
+
+

@@ -1,6 +1,17 @@
-//[kompiledb-core](../../../index.md)/[com.saveourtool.kompiledb.core.lang](../index.md)/[C](index.md)/[toString](to-string.md)
+---
+title: toString
+---
+//[kompiledb-core](../../../index.html)/[com.saveourtool.kompiledb.core.lang](../index.html)/[C](index.html)/[toString](to-string.html)
+
+
 
 # toString
 
+
+
 [jvm]\
-open override fun [toString](to-string.md)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
+open override fun [toString](to-string.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
+
+
+
+

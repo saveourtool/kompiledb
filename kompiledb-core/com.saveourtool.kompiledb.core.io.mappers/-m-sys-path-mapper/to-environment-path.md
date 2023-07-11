@@ -1,8 +1,21 @@
-//[kompiledb-core](../../../index.md)/[com.saveourtool.kompiledb.core.io.mappers](../index.md)/[MSysPathMapper](index.md)/[toEnvironmentPath](to-environment-path.md)
+---
+title: toEnvironmentPath
+---
+//[kompiledb-core](../../../index.html)/[com.saveourtool.kompiledb.core.io.mappers](../index.html)/[MSysPathMapper](index.html)/[toEnvironmentPath](to-environment-path.html)
+
+
 
 # toEnvironmentPath
 
+
+
 [jvm]\
-open override fun [Path](https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html).[toEnvironmentPath](to-environment-path.md)(): [EnvPath](../../com.saveourtool.kompiledb.core/-env-path/index.md)
+open override fun [Path](https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html).[toEnvironmentPath](to-environment-path.html)(): [EnvPath](../../com.saveourtool.kompiledb.core/-env-path/index.html)
+
+
 
 The effect is the same as the result of running `cygpath -u`.
+
+
+
+

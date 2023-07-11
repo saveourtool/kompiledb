@@ -1,17 +1,33 @@
-//[kompiledb-core](../../../index.md)/[com.saveourtool.kompiledb.core.compiler](../index.md)/[CompilerCommandParser](index.md)/[parse](parse.md)
+---
+title: parse
+---
+//[kompiledb-core](../../../index.html)/[com.saveourtool.kompiledb.core.compiler](../index.html)/[CompilerCommandParser](index.html)/[parse](parse.html)
+
+
 
 # parse
 
+
+
 [jvm]\
-abstract fun [parse](parse.md)(databasePath: [Path](https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html), command: [CompilationCommand](../../com.saveourtool.kompiledb.core/-compilation-command/index.md)): [ParsedCompilerCommand](../-parsed-compiler-command/index.md)
+abstract fun [parse](parse.html)(databasePath: [Path](https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html), command: [CompilationCommand](../../com.saveourtool.kompiledb.core/-compilation-command/index.html)): [ParsedCompilerCommand](../-parsed-compiler-command/index.html)
+
+
 
 Parses the compilation command.
 
+
+
 #### Return
+
+
 
 the parsed command.
 
+
+
 #### Parameters
+
 
 jvm
 
@@ -19,3 +35,7 @@ jvm
 |---|---|
 | databasePath | the path to the compilation database JSON file (or its parent directory) on the local file system. |
 | command | the compilation command to parse. |
+
+
+
+

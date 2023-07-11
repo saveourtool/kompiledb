@@ -1,8 +1,21 @@
-//[kompiledb-core](../../../index.md)/[com.saveourtool.kompiledb.core](../index.md)/[CompilationCommand](index.md)/[directory](directory.md)
+---
+title: directory
+---
+//[kompiledb-core](../../../index.html)/[com.saveourtool.kompiledb.core](../index.html)/[CompilationCommand](index.html)/[directory](directory.html)
+
+
 
 # directory
 
-[jvm]\
-val [directory](directory.md): [EnvPath](../-env-path/index.md)
 
-The working directory of the compilation. All paths specified in the [command](command.md) or [file](file.md) fields must be either absolute or relative to this directory.
+
+[jvm]\
+val [directory](directory.html): [EnvPath](../-env-path/index.html)
+
+
+
+The working directory of the compilation. All paths specified in the [command](command.html) or [file](file.html) fields must be either absolute or relative to this directory.
+
+
+
+

@@ -1,25 +1,48 @@
-//[kompiledb-core](../../../index.md)/[com.saveourtool.kompiledb.core](../index.md)/[JsonIo](index.md)/[toJson](to-json.md)
+---
+title: toJson
+---
+//[kompiledb-core](../../../index.html)/[com.saveourtool.kompiledb.core](../index.html)/[JsonIo](index.html)/[toJson](to-json.html)
+
+
 
 # toJson
 
+
+
 [jvm]\
-abstract fun [CompilationDatabase](../-compilation-database/index.md).[toJson](to-json.md)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
+abstract fun [CompilationDatabase](../-compilation-database/index.html).[toJson](to-json.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
+
+
 
 Converts this compilation database to JSON.
 
+
+
 #### See also
+
 
 | |
 |---|
-| [JsonIo.toJson](to-json.md) |
+| [JsonIo.toJson](to-json.html) |
+
+
+
 
 [jvm]\
-abstract fun [CompilationCommand](../-compilation-command/index.md).[toJson](to-json.md)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
+abstract fun [CompilationCommand](../-compilation-command/index.html).[toJson](to-json.html)(): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)
+
+
 
 Converts this compilation command to JSON.
 
+
+
 #### See also
+
 
 | |
 |---|
-| [JsonIo.toJson](to-json.md) |
+| [JsonIo.toJson](to-json.html) |
+
+
+
