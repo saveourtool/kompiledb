@@ -29,6 +29,60 @@ See the [project website](https://saveourtool.github.io/kompiledb/) for document
    + language (C, C++) and standard (`c++17`, `gnu++14`) recognized;
    + `-nostdinc`, `-nostdinc++` and similar switches recognized.
 
+## Releases
+
+The latest release is available from both _GitHub Packages_ and _Maven Central_.
+For _GitHub Packages_, the repository can be added as follows.
+
+For `build.gradle.kts`:
+
+```kotlin
+repositories {
+    mavenCentral()
+    maven {
+        name = "saveourtool/kompiledb"
+        url = uri("https://maven.pkg.github.com/saveourtool/kompiledb")
+        content {
+            includeGroup("com.saveourtool.kompiledb")
+        }
+        credentials {
+            username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
+            password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
+}
+```
+
+For `settings.gradle.kts`:
+
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        maven {
+            name = "saveourtool/kompiledb"
+            url = uri("https://maven.pkg.github.com/saveourtool/kompiledb")
+            content {
+                includeGroup("com.saveourtool.kompiledb")
+            }
+            credentials {
+                username = providers.gradleProperty("gpr.user").orNull
+                    ?: System.getenv("GITHUB_ACTOR")
+                password = providers.gradleProperty("gpr.key").orNull
+                    ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
+```
+
+Then add the dependency as usual:
+
+```kotlin
+dependencies {
+    implementation("com.saveourtool.kompiledb:kompiledb-gson:1.0.0")
+}
+```
+
 ## Other JSON formats
 
 If your build system produces a JSON different from the compilation database
