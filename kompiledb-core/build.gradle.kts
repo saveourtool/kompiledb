@@ -3,6 +3,7 @@ plugins {
     id("com.saveourtool.kompiledb.maven-repo-configuration")
     id("com.saveourtool.kompiledb.kotlin-configuration")
     id("com.saveourtool.kompiledb.testing-configuration")
+    id("com.saveourtool.kompiledb.publishing-configuration")
 }
 
 dependencies {
