@@ -63,6 +63,10 @@ fun Project.configureGitHubPublishing() =
  * Configures all publications. The publications must already exist.
  */
 fun Project.configurePublications() {
+    tasks.named<Jar>("javadocJar").configure {
+        from(tasks.findByName("dokkaJavadoc"))
+    }
+
     configure<PublishingExtension> {
         publications.withType<MavenPublication>().configureEach {
             pom {
