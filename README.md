@@ -8,6 +8,8 @@ _Kotlin_ bindings to [_JSON Compilation Database_](http://clang.llvm.org/docs/JS
 
 This library is inspired by tools such as [nickdiego/compiledb](https://github.com/nickdiego/compiledb) and [rizsotto/Bear](https://github.com/rizsotto/Bear).
 
+See the [project website](https://saveourtool.github.io/kompiledb/) for documentation and APIs.
+
 ## Features
 
  - Can read and write `compile_commands.json`.
