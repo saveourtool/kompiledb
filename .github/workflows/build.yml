@@ -11,6 +11,8 @@ env:
   GRADLE_OPTS: -Dorg.gradle.daemon=true -Dorg.gradle.parallel=true -Dorg.gradle.welcome=never
   GPG_SEC: ${{ secrets.PGP_SEC }}
   GPG_PASSWORD: ${{ secrets.PGP_PASSWORD }}
+  OSSRH_USERNAME: ${{ secrets.SONATYPE_USER }}
+  OSSRH_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
 
 jobs:
   build:
@@ -31,7 +33,7 @@ jobs:
       contents: write
       pull-requests: write
       statuses: write
-      # Explicitly granted, necessary for the `publish` step.
+      # Explicitly granted, necessary for the `publish-github` step.
       packages: write
 
     steps:
@@ -88,13 +90,25 @@ jobs:
           retention-days: 1
 
       - name: 'Publish a snapshot to GitHub (Java 8 only)'
-        id: publish
+        id: publish-github
         if: ${{ github.event_name == 'push' && github.ref_type == 'branch' && github.ref == 'refs/heads/master' && matrix.java-version == 8 }}
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: wrapper
           arguments: |
             publishAllPublicationsToGitHubRepository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 'Publish a snapshot to Maven Central (Java 8 only)'
+        id: publish-sonatype
+        if: ${{ github.event_name == 'push' && github.ref_type == 'branch' && github.ref == 'refs/heads/master' && matrix.java-version == 8 }}
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: wrapper
+          arguments: |
+            publishToSonatype
+            closeAndReleaseSonatypeStagingRepository
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
