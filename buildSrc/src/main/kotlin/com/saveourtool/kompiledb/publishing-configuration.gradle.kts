@@ -9,6 +9,7 @@ import org.gradle.kotlin.dsl.support.serviceOf
 plugins {
     `maven-publish`
     signing
+    id("org.jetbrains.dokka")
 }
 
 group = "com.saveourtool.kompiledb"

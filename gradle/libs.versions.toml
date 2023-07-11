@@ -2,6 +2,7 @@
 gson = "2.10.1"
 kotlin = "1.9.0"
 kotest = "5.6.2"
+dokka = "1.8.20"
 
 [plugins]
 
@@ -13,3 +14,4 @@ kotest-assertions-json = { module = "io.kotest:kotest-assertions-json", version.
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
