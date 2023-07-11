@@ -34,11 +34,11 @@ jobs:
         with:
           gradle-version: wrapper
           arguments: |
-            :kompiledb-core:dokkaJekyll
+            :kompiledb-core:dokkaHtml
 
       - name: 'Publish to GitHub Pages'
         id: publish
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: kompiledb-core/build/dokka/jekyll
+          publish_dir: kompiledb-core/build/dokka/html
