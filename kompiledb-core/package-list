@@ -1,4 +1,4 @@
-$dokka.format:jekyll-v1
+$dokka.format:html-v1
 $dokka.linkExtension:html
 $dokka.location:com.saveourtool.kompiledb.core.compiler////PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.compiler/index.html
 $dokka.location:com.saveourtool.kompiledb.core.compiler/CompilerCommandParser.Companion///PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.compiler/-compiler-command-parser/-companion/index.html

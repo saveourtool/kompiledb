@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>ParsedCompilerCommand</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+</head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+            <a href="../../../index.html">
+                    <span>kompiledb-core</span>
+            </a>
+    </div>
+    <div>
+1.0.0-SNAPSHOT    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":kompiledb-core:dokkaHtml/main">jvm</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="kompiledb-core::com.saveourtool.kompiledb.core.compiler/ParsedCompilerCommand///PointingToDeclaration//830652186">
+  <div class="breadcrumbs"><a href="../../../index.html">kompiledb-core</a><span class="delimiter">/</span><a href="../index.html">com.saveourtool.kompiledb.core.compiler</a><span class="delimiter">/</span><span class="current">ParsedCompilerCommand</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Parsed</span><wbr></wbr><span>Compiler</span><wbr></wbr><span><span>Command</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kompiledb-core:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">ParsedCompilerCommand</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>projectRoot<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>directory<span class="token operator">: </span><a href="../../com.saveourtool.kompiledb.core/-env-path/index.html">EnvPath</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>file<span class="token operator">: </span><a href="../../com.saveourtool.kompiledb.core/-env-path/index.html">EnvPath</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>compiler<span class="token operator">: </span><a href="../../com.saveourtool.kompiledb.core/-env-path/index.html">EnvPath</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>language<span class="token operator">: </span><a href="../../com.saveourtool.kompiledb.core.lang/-language/index.html">Language</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>languageStandard<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>standardIncludePaths<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-standard-include-paths/index.html">StandardIncludePaths</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>includePaths<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.saveourtool.kompiledb.core/-env-path/index.html">EnvPath</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>definedMacros<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>undefinedMacros<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>arguments<span class="token operator">: </span><a href="../../com.saveourtool.kompiledb.core.io/index.html#1743527040%2FClasslikes%2F830652186">ParsedArgs</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>ignoredArguments<span class="token operator">: </span><a href="../../com.saveourtool.kompiledb.core.io/index.html#1743527040%2FClasslikes%2F830652186">ParsedArgs</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>parseErrors<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()</span></span><span class="token punctuation">)</span></div><p class="paragraph">The result of parsing a <a href="../../com.saveourtool.kompiledb.core/-compilation-command/index.html">CompilationCommand</a> with a <a href="../-compiler-command-parser/index.html">CompilerCommandParser</a></p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>project</span><wbr></wbr><span><span>Root</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the root of the project as the local file system path.</p></div></div></div></div><div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>directory</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the environment-specific path to the working directory of the compilation. All paths specified in the <a href="file.html">file</a>, <a href="compiler.html">compiler</a>, <a href="include-paths.html">includePaths</a>, <a href="arguments.html">arguments</a> or <a href="ignored-arguments.html">ignoredArguments</a> fields must be either absolute or relative to this directory.</p></div></div></div></div><div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>file</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the environment-specific path to the main translation unit source processed by this compilation step.</p></div></div></div></div><div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>compiler</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the environment-specific path to the compiler.</p></div></div></div></div><div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>language</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the language of the source file (C, C++, or other).</p></div></div></div></div><div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>language</span><wbr></wbr><span><span>Standard</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the language standard, such as <code class="lang-kotlin">c++23</code>, <code class="lang-kotlin">gnu++14</code>, or <code class="lang-kotlin">iso9899:2018</code>.</p></div></div></div></div><div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>standard</span><wbr></wbr><span>Include</span><wbr></wbr><span><span>Paths</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the standard include paths (those which don't need to be explicitly requested via <code class="lang-kotlin">-I</code>).</p></div></div></div></div><div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>include</span><wbr></wbr><span><span>Paths</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the include paths. The keys are command-line switches such as <code class="lang-kotlin">-I</code> or <code class="lang-kotlin">-include</code>. The values are paths to include files or directories.</p></div></div></div></div><div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>defined</span><wbr></wbr><span><span>Macros</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the defined macros along with their values.</p></div></div></div></div><div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>undefined</span><wbr></wbr><span><span>Macros</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the undefined (cancelled) macros.</p></div></div></div></div><div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span><span>arguments</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the compile command <code class="lang-kotlin">argv</code> as list of strings, similar to <a href="../../com.saveourtool.kompiledb.core/-compilation-command/arguments.html">CompilationCommand.arguments</a>. The list may contain additional arguments as a result of response file expansion.</p></div></div></div></div><div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>ignored</span><wbr></wbr><span><span>Arguments</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the <a href="arguments.html">arguments</a> which are neither <a href="include-paths.html">includePaths</a>, nor <a href="defined-macros.html">definedMacros</a>, nor <a href="undefined-macros.html">undefinedMacros</a> — in other words, those which don't fall into any of the &quot;interesting&quot; categories.</p></div></div></div></div><div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>parse</span><wbr></wbr><span><span>Errors</span></span></u></div></span></div><div><div class="title"><p class="paragraph">the list of parse errors encountered, if any.</p></div></div></div></div></div><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../com.saveourtool.kompiledb.core/-compilation-command/index.html"><span>Compilation</span><wbr></wbr><span><span>Command</span></span></a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-compiler-command-parser/parse.html"><span>Compiler</span><wbr></wbr><span>Command</span><wbr></wbr><span>Parser.</span><wbr></wbr><span>parse</span></a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="1808979766%2FConstructors%2F830652186" anchor-label="ParsedCompilerCommand" id="1808979766%2FConstructors%2F830652186" data-filterable-set=":kompiledb-core:dokkaHtml/main"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-parsed-compiler-command.html"><span>Parsed</span><wbr></wbr><span>Compiler</span><wbr></wbr><span><span>Command</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1808979766%2FConstructors%2F830652186"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kompiledb-core:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">projectRoot<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a><span class="token punctuation">, </span></span><span class="parameter ">directory<span class="token operator">: </span><a href="../../com.saveourtool.kompiledb.core/-env-path/index.html">EnvPath</a><span class="token punctuation">, </span></span><span class="parameter ">file<span class="token operator">: </span><a href="../../com.saveourtool.kompiledb.core/-env-path/index.html">EnvPath</a><span class="token punctuation">, </span></span><span class="parameter ">compiler<span class="token operator">: </span><a href="../../com.saveourtool.kompiledb.core/-env-path/index.html">EnvPath</a><span class="token punctuation">, </span></span><span class="parameter ">language<span class="token operator">: </span><a href="../../com.saveourtool.kompiledb.core.lang/-language/index.html">Language</a><span class="token punctuation">, </span></span><span class="parameter ">languageStandard<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">standardIncludePaths<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-standard-include-paths/index.html">StandardIncludePaths</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">includePaths<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.saveourtool.kompiledb.core/-env-path/index.html">EnvPath</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">definedMacros<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">undefinedMacros<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">arguments<span class="token operator">: </span><a href="../../com.saveourtool.kompiledb.core.io/index.html#1743527040%2FClasslikes%2F830652186">ParsedArgs</a><span class="token punctuation">, </span></span><span class="parameter ">ignoredArguments<span class="token operator">: </span><a href="../../com.saveourtool.kompiledb.core.io/index.html#1743527040%2FClasslikes%2F830652186">ParsedArgs</a><span class="token punctuation">, </span></span><span class="parameter ">parseErrors<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator"> = </span>emptyList()</span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="692285573%2FProperties%2F830652186" anchor-label="arguments" id="692285573%2FProperties%2F830652186" data-filterable-set=":kompiledb-core:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="arguments.html"><span><span>arguments</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="692285573%2FProperties%2F830652186"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kompiledb-core:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="arguments.html">arguments</a><span class="token operator">: </span><a href="../../com.saveourtool.kompiledb.core.io/index.html#1743527040%2FClasslikes%2F830652186">ParsedArgs</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="524810976%2FProperties%2F830652186" anchor-label="compiler" id="524810976%2FProperties%2F830652186" data-filterable-set=":kompiledb-core:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="compiler.html"><span><span>compiler</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="524810976%2FProperties%2F830652186"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kompiledb-core:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="compiler.html">compiler</a><span class="token operator">: </span><a href="../../com.saveourtool.kompiledb.core/-env-path/index.html">EnvPath</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="887988875%2FProperties%2F830652186" anchor-label="definedMacros" id="887988875%2FProperties%2F830652186" data-filterable-set=":kompiledb-core:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="defined-macros.html"><span>defined</span><wbr></wbr><span><span>Macros</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="887988875%2FProperties%2F830652186"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kompiledb-core:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="defined-macros.html">definedMacros</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-305536178%2FProperties%2F830652186" anchor-label="directory" id="-305536178%2FProperties%2F830652186" data-filterable-set=":kompiledb-core:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="directory.html"><span><span>directory</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-305536178%2FProperties%2F830652186"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kompiledb-core:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="directory.html">directory</a><span class="token operator">: </span><a href="../../com.saveourtool.kompiledb.core/-env-path/index.html">EnvPath</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1932888669%2FProperties%2F830652186" anchor-label="file" id="-1932888669%2FProperties%2F830652186" data-filterable-set=":kompiledb-core:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="file.html"><span><span>file</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1932888669%2FProperties%2F830652186"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kompiledb-core:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="file.html">file</a><span class="token operator">: </span><a href="../../com.saveourtool.kompiledb.core/-env-path/index.html">EnvPath</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-617554821%2FProperties%2F830652186" anchor-label="ignoredArguments" id="-617554821%2FProperties%2F830652186" data-filterable-set=":kompiledb-core:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="ignored-arguments.html"><span>ignored</span><wbr></wbr><span><span>Arguments</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-617554821%2FProperties%2F830652186"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kompiledb-core:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="ignored-arguments.html">ignoredArguments</a><span class="token operator">: </span><a href="../../com.saveourtool.kompiledb.core.io/index.html#1743527040%2FClasslikes%2F830652186">ParsedArgs</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="757266233%2FProperties%2F830652186" anchor-label="includePaths" id="757266233%2FProperties%2F830652186" data-filterable-set=":kompiledb-core:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="include-paths.html"><span>include</span><wbr></wbr><span><span>Paths</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="757266233%2FProperties%2F830652186"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kompiledb-core:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="include-paths.html">includePaths</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../com.saveourtool.kompiledb.core/-env-path/index.html">EnvPath</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="426583623%2FProperties%2F830652186" anchor-label="language" id="426583623%2FProperties%2F830652186" data-filterable-set=":kompiledb-core:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="language.html"><span><span>language</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="426583623%2FProperties%2F830652186"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kompiledb-core:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="language.html">language</a><span class="token operator">: </span><a href="../../com.saveourtool.kompiledb.core.lang/-language/index.html">Language</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1135969270%2FProperties%2F830652186" anchor-label="languageStandard" id="-1135969270%2FProperties%2F830652186" data-filterable-set=":kompiledb-core:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="language-standard.html"><span>language</span><wbr></wbr><span><span>Standard</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1135969270%2FProperties%2F830652186"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kompiledb-core:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="language-standard.html">languageStandard</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="107901789%2FProperties%2F830652186" anchor-label="parseErrors" id="107901789%2FProperties%2F830652186" data-filterable-set=":kompiledb-core:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="parse-errors.html"><span>parse</span><wbr></wbr><span><span>Errors</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="107901789%2FProperties%2F830652186"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kompiledb-core:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="parse-errors.html">parseErrors</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1466476128%2FProperties%2F830652186" anchor-label="projectRoot" id="1466476128%2FProperties%2F830652186" data-filterable-set=":kompiledb-core:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="project-root.html"><span>project</span><wbr></wbr><span><span>Root</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1466476128%2FProperties%2F830652186"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kompiledb-core:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="project-root.html">projectRoot</a><span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-681785220%2FProperties%2F830652186" anchor-label="standardIncludePaths" id="-681785220%2FProperties%2F830652186" data-filterable-set=":kompiledb-core:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="standard-include-paths.html"><span>standard</span><wbr></wbr><span>Include</span><wbr></wbr><span><span>Paths</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-681785220%2FProperties%2F830652186"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kompiledb-core:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="standard-include-paths.html">standardIncludePaths</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-standard-include-paths/index.html">StandardIncludePaths</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1213847268%2FProperties%2F830652186" anchor-label="undefinedMacros" id="1213847268%2FProperties%2F830652186" data-filterable-set=":kompiledb-core:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="undefined-macros.html"><span>undefined</span><wbr></wbr><span><span>Macros</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1213847268%2FProperties%2F830652186"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kompiledb-core:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="undefined-macros.html">undefinedMacros</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-1683023887%2FFunctions%2F830652186" anchor-label="includePaths" id="-1683023887%2FFunctions%2F830652186" data-filterable-set=":kompiledb-core:dokkaHtml/main"></a>
+          <div class="table-row" data-filterable-current=":kompiledb-core:dokkaHtml/main" data-filterable-set=":kompiledb-core:dokkaHtml/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="include-paths.html"><span>include</span><wbr></wbr><span><span>Paths</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1683023887%2FFunctions%2F830652186"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":kompiledb-core:dokkaHtml/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="include-paths.html"><span class="token function">includePaths</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">pathMapper<span class="token operator">: </span><a href="../../com.saveourtool.kompiledb.core.io/-path-mapper/index.html">PathMapper</a><span class="token operator"> = </span>LocalPathMapper</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html">Path</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">Converts the include paths to a local form using the <a href="include-paths.html">pathMapper</a>, normalizing them if necessary.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+</body>
+</html>
