@@ -95,9 +95,16 @@ jobs:
           echo "version=$(./gradlew --no-daemon --console=plain -q :properties 2>/dev/null | grep '^version:' | awk '{ print $2 }')" >>${GITHUB_OUTPUT}
         shell: bash
 
-      - name: 'Test'
+      - name: 'Version is a SNAPSHOT?'
+        if: ${{ endsWith(steps.version.outputs.version, '-SNAPSHOT') }}
         run: |
-          echo 'Version from the previous step is: ${{ steps.version.outputs.version }}'
+          echo 'Version from the previous step is a SNAPSHOT: ${{ steps.version.outputs.version }}'
+        shell: bash
+
+      - name: 'Version is not a SNAPSHOT?'
+        if: ${{ !endsWith(steps.version.outputs.version, '-SNAPSHOT') }}
+        run: |
+          echo 'Version from the previous step is not a SNAPSHOT: ${{ steps.version.outputs.version }}'
         shell: bash
 
       - name: 'Publish a snapshot to GitHub (Java 8 only)'
