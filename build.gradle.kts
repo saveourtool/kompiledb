@@ -1,5 +1,5 @@
 plugins {
-    id("io.github.gradle-nexus.publish-plugin")
+    id("com.saveourtool.kompiledb.publishing-configuration")
 }
 
 group = "com.saveourtool.kompiledb"

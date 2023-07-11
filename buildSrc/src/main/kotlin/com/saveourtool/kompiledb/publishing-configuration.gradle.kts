@@ -1,7 +1,11 @@
 package com.saveourtool.kompiledb
 
+import io.github.gradlenexus.publishplugin.NexusPublishExtension
+import io.github.gradlenexus.publishplugin.NexusPublishPlugin
 import org.gradle.internal.logging.text.StyledTextOutput
 import org.gradle.internal.logging.text.StyledTextOutput.Style.Failure
+import org.gradle.internal.logging.text.StyledTextOutput.Style.Identifier
+import org.gradle.internal.logging.text.StyledTextOutput.Style.Info
 import org.gradle.internal.logging.text.StyledTextOutput.Style.Success
 import org.gradle.internal.logging.text.StyledTextOutputFactory
 import org.gradle.kotlin.dsl.support.serviceOf
@@ -22,6 +26,7 @@ configurePublishing()
  */
 fun Project.configurePublishing() {
     createPublications()
+    configureNexusPublishing()
     configureGitHubPublishing()
     configurePublications()
     configureSigning()
@@ -31,12 +36,55 @@ fun Project.configurePublishing() {
  * Creates the publications.
  */
 fun Project.createPublications() {
+    if (this == rootProject) {
+        return
+    }
+
     publishing {
         publications {
             create<MavenPublication>("maven") {
                 from(components["java"])
                 suppressPomMetadataWarningsFor("testFixturesApiElements")
                 suppressPomMetadataWarningsFor("testFixturesRuntimeElements")
+            }
+        }
+    }
+}
+
+/**
+ * Configures Maven Central as the publish destination.
+ */
+fun Project.configureNexusPublishing() {
+    if (this != rootProject) {
+        return
+    }
+
+    if (!hasProperties("sonatypeUsername", "sonatypePassword")) {
+        styledOut(logCategory = "nexus")
+            .style(Info).text("Skipping Nexus publishing configuration as either ")
+            .style(Identifier).text("sonatypeUsername")
+            .style(Info).text(" or ")
+            .style(Identifier).text("sonatypePassword")
+            .style(Info).text(" are not set")
+            .println()
+        return
+    }
+
+    apply<NexusPublishPlugin>()
+
+    configure<NexusPublishExtension> {
+        this@configure.repositories {
+            sonatype {
+                /**
+                 * The default is https://oss.sonatype.org/service/local/.
+                 */
+                nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+                /**
+                 * The default is https://oss.sonatype.org/content/repositories/snapshots/.
+                 */
+                snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+                username.set(property("sonatypeUsername") as String)
+                password.set(property("sonatypePassword") as String)
             }
         }
     }
@@ -63,6 +111,10 @@ fun Project.configureGitHubPublishing() =
  * Configures all publications. The publications must already exist.
  */
 fun Project.configurePublications() {
+    if (this == rootProject) {
+        return
+    }
+
     tasks.named<Jar>("javadocJar").configure {
         from(tasks.findByName("dokkaJavadoc"))
     }
@@ -105,6 +157,10 @@ fun Project.configurePublications() {
  * Should be explicitly called after each custom `publishing {}` section.
  */
 fun Project.configureSigning() {
+    if (this == rootProject) {
+        return
+    }
+
     System.getenv("GPG_SEC")?.let {
         extra.set("signingKey", it)
     }
@@ -160,6 +216,8 @@ fun Project.configureSigning() {
     "SpreadOperator",
 )
 fun Project.configureSigningCommon(useKeys: SigningExtension.() -> Unit = {}) {
+    require(this != rootProject)
+
     configure<SigningExtension> {
         useKeys()
         val publications = extensions.getByType<PublishingExtension>().publications
