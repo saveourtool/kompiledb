@@ -38,7 +38,6 @@ For `build.gradle.kts`:
 
 ```kotlin
 repositories {
-    mavenCentral()
     maven {
         name = "saveourtool/kompiledb"
         url = uri("https://maven.pkg.github.com/saveourtool/kompiledb")

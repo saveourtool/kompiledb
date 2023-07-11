@@ -89,6 +89,17 @@ jobs:
             **/build/test-results/*/TEST-*.xml
           retention-days: 1
 
+      - name: 'Determine whether the current version is a SNAPSHOT one'
+        id: version
+        run: |
+          echo "version=$(./gradlew --no-daemon --console=plain -q :properties 2>/dev/null | grep '^version:' | awk '{ print $2 }')" >>${GITHUB_OUTPUT}
+        shell: bash
+
+      - name: 'Test'
+        run: |
+          echo 'Version from the previous step is: ${{ steps.version.outputs.version }}'
+        shell: bash
+
       - name: 'Publish a snapshot to GitHub (Java 8 only)'
         id: publish-github
         if: ${{ github.event_name == 'push' && github.ref_type == 'branch' && github.ref == 'refs/heads/master' && matrix.java-version == 8 }}
