@@ -13,6 +13,7 @@ dependencies {
     implementation(libs.kotlin.gradle.plugin)
     implementation(libs.gradle.kotlin.dsl.plugins)
     implementation(libs.dokka.gradle.plugin)
+    implementation(libs.gradle.nexus.publish.plugin)
 
     /*
      * Workaround for https://github.com/gradle/gradle/issues/15383:

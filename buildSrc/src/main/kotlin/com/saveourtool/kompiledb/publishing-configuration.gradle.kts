@@ -12,8 +12,8 @@ plugins {
     id("org.jetbrains.dokka")
 }
 
-group = "com.saveourtool.kompiledb"
-version = "1.0.0-SNAPSHOT"
+group = rootProject.group
+version = rootProject.version
 
 configurePublishing()
 
