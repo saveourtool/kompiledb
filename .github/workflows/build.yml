@@ -33,7 +33,7 @@ jobs:
       contents: write
       pull-requests: write
       statuses: write
-      # Explicitly granted, necessary for the `publish` step.
+      # Explicitly granted, necessary for the `publish-github` step.
       packages: write
 
     steps:
@@ -90,7 +90,7 @@ jobs:
           retention-days: 1
 
       - name: 'Publish a snapshot to GitHub (Java 8 only)'
-        id: publish
+        id: publish-github
         if: ${{ github.event_name == 'push' && github.ref_type == 'branch' && github.ref == 'refs/heads/master' && matrix.java-version == 8 }}
         uses: gradle/gradle-build-action@v2
         with:
@@ -101,7 +101,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 'Publish a snapshot to Maven Central (Java 8 only)'
-        id: publish
+        id: publish-sonatype
         if: ${{ github.event_name == 'push' && github.ref_type == 'branch' && github.ref == 'refs/heads/master' && matrix.java-version == 8 }}
         uses: gradle/gradle-build-action@v2
         with:
