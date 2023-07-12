@@ -1,6 +1,9 @@
 # kompiledb
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub release](https://img.shields.io/github/release/saveourtool/kompiledb.svg)](https://github.com/saveourtool/kompiledb/releases/)
+[![Maven Central](https://img.shields.io/maven-central/v/com.saveourtool.kompiledb/kompiledb-core.svg)](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.saveourtool.kompiledb%22)
+[![javadoc](https://javadoc.io/badge2/com.saveourtool.kompiledb/kompiledb-core/javadoc.svg)](https://javadoc.io/doc/com.saveourtool.kompiledb/kompiledb-core)
 [![Build](https://github.com/saveourtool/kompiledb/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/saveourtool/kompiledb/actions/workflows/build.yml?query=branch%3Amaster)
 [![Dependencies](https://github.com/saveourtool/kompiledb/actions/workflows/dependencies.yml/badge.svg?branch=master)](https://github.com/saveourtool/kompiledb/actions/workflows/dependencies.yml?query=branch%3Amaster)
 
@@ -12,6 +15,7 @@ See the [project website](https://saveourtool.github.io/kompiledb/) for document
 
 ## Features
 
+ - Compatible with Java 8.
  - Can read and write `compile_commands.json`.
  - No dependencies (except for [google/gson](https://github.com/google/gson)).
    The core library is JSON engine agnostic, so it's easy to add support for a
