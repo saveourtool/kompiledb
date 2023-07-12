@@ -6,6 +6,11 @@ updates:
       interval: "daily"
       time: "02:00"
     open-pull-requests-limit: 10
+    ignore:
+      # Ignore https://github.com/ajoberstar/reckon updates
+      # (version 0.13.2 is the last one compatible with Java 8).
+      - dependency-name: "org.ajoberstar.reckon:*"
+      - dependency-name: "org.ajoberstar.reckon.settings:*"
 
   - package-ecosystem: "github-actions"
     directory: "/"
