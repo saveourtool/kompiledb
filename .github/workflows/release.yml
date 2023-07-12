@@ -39,7 +39,7 @@ jobs:
         with:
           gradle-version: wrapper
           arguments: |
-            -Preckon.stage=final
+            -Preckon.stage=
             publishAllPublicationsToGitHubRepository
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -50,7 +50,7 @@ jobs:
         with:
           gradle-version: wrapper
           arguments: |
-            -Preckon.stage=final
+            -Preckon.stage=
             publishToSonatype
             closeAndReleaseSonatypeStagingRepository
         env:
