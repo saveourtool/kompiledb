@@ -1,5 +1,6 @@
 [versions]
 gson = "2.10.1"
+jackson = "2.15.2"
 kotlin = "1.9.0"
 kotest = "5.6.2"
 dokka = "1.8.20"
@@ -11,6 +12,8 @@ reckon-gradle-plugin = "0.13.2"
 
 [libraries]
 google-gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson"}
+jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson"}
 gradle-kotlin-dsl-plugins = { module = "org.gradle.kotlin:gradle-kotlin-dsl-plugins", version = "4.0.15" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-assertions-json = { module = "io.kotest:kotest-assertions-json", version.ref = "kotest" }
