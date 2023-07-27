@@ -16,6 +16,11 @@ dependencies {
     implementation(libs.nexus.publish.gradle.plugin)
     implementation(libs.reckon.gradle.plugin)
 
+    constraints {
+        implementation(libs.jackson.databind)
+        implementation(libs.jackson.module.kotlin)
+    }
+
     /*
      * Workaround for https://github.com/gradle/gradle/issues/15383:
      * Make version catalogs accessible from precompiled script plugins.

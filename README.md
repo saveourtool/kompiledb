@@ -17,10 +17,11 @@ See the [project website](https://saveourtool.github.io/kompiledb/) for document
 
  - Compatible with Java 8.
  - Can read and write `compile_commands.json`.
- - No dependencies (except for [google/gson](https://github.com/google/gson)).
+ - No dependencies (except for [google/gson](https://github.com/google/gson) or
+   [FasterXML/jackson](https://github.com/FasterXML/jackson)).
    The core library is JSON engine agnostic, so it's easy to add support for a
-   different JSON back-end, such as [FasterXML/jackson](https://github.com/FasterXML/jackson)
-   or [Kotlin/kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization).
+   different JSON back-end, such as
+   [Kotlin/kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization).
  - Support for pluggable path translation between the local and the build
    environments (such as [_Cygwin_](https://www.cygwin.com) or
    [_WSL_](https://github.com/Microsoft/WSL)).
@@ -82,7 +83,7 @@ Then add the dependency as usual:
 
 ```kotlin
 dependencies {
-    implementation("com.saveourtool.kompiledb:kompiledb-gson:1.0.0")
+    implementation("com.saveourtool.kompiledb:kompiledb-gson:1.0.1")
 }
 ```
 

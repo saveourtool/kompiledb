@@ -13,6 +13,7 @@ plugins {
 
 include("kompiledb-core")
 include("kompiledb-gson")
+include("kompiledb-jackson")
 
 gradleEnterprise {
     if (System.getenv("CI") != null) {
