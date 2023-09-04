@@ -25,6 +25,7 @@ $dokka.location:com.saveourtool.kompiledb.core.compiler/StandardIncludePaths.COM
 $dokka.location:com.saveourtool.kompiledb.core.compiler/StandardIncludePaths.STANDARD_CXX_LIBRARY///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kompiledb-core/com.saveourtool.kompiledb.core.compiler/-standard-include-paths/-s-t-a-n-d-a-r-d_-c-x-x_-l-i-b-r-a-r-y/index.html
 $dokka.location:com.saveourtool.kompiledb.core.compiler/StandardIncludePaths.STANDARD_C_LIBRARY///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}kompiledb-core/com.saveourtool.kompiledb.core.compiler/-standard-include-paths/-s-t-a-n-d-a-r-d_-c_-l-i-b-r-a-r-y/index.html
 $dokka.location:com.saveourtool.kompiledb.core.compiler/StandardIncludePaths///PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.compiler/-standard-include-paths/index.html
+$dokka.location:com.saveourtool.kompiledb.core.compiler/StandardIncludePaths/entries/#/PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.compiler/-standard-include-paths/entries.html
 $dokka.location:com.saveourtool.kompiledb.core.compiler/StandardIncludePaths/valueOf/#kotlin.String/PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.compiler/-standard-include-paths/value-of.html
 $dokka.location:com.saveourtool.kompiledb.core.compiler/StandardIncludePaths/values/#/PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.compiler/-standard-include-paths/values.html
 $dokka.location:com.saveourtool.kompiledb.core.io.mappers////PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.io.mappers/index.html
@@ -46,10 +47,12 @@ $dokka.location:com.saveourtool.kompiledb.core.io.parsers/AbstractComandLinePars
 $dokka.location:com.saveourtool.kompiledb.core.io.parsers/PosixShellCommandLineParser///PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.io.parsers/-posix-shell-command-line-parser/index.html
 $dokka.location:com.saveourtool.kompiledb.core.io.parsers/WindowsCommandLineParser///PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.io.parsers/-windows-command-line-parser/index.html
 $dokka.location:com.saveourtool.kompiledb.core.io////PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.io/index.html
+$dokka.location:com.saveourtool.kompiledb.core.io/Arg///PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.io/-arg/index.html
 $dokka.location:com.saveourtool.kompiledb.core.io/CommandLineParser.Companion///PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.io/-command-line-parser/-companion/index.html
 $dokka.location:com.saveourtool.kompiledb.core.io/CommandLineParser.Companion/invoke/#/PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.io/-command-line-parser/-companion/invoke.html
 $dokka.location:com.saveourtool.kompiledb.core.io/CommandLineParser///PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.io/-command-line-parser/index.html
 $dokka.location:com.saveourtool.kompiledb.core.io/CommandLineParser/parsedArguments/com.saveourtool.kompiledb.core.CompilationCommand#/PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.io/-command-line-parser/parsed-arguments.html
+$dokka.location:com.saveourtool.kompiledb.core.io/ParsedArgs///PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.io/-parsed-args/index.html
 $dokka.location:com.saveourtool.kompiledb.core.io/PathMapper///PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.io/-path-mapper/index.html
 $dokka.location:com.saveourtool.kompiledb.core.io/PathMapper/fileSeparator/#/PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.io/-path-mapper/file-separator.html
 $dokka.location:com.saveourtool.kompiledb.core.io/PathMapper/isAbsolute/com.saveourtool.kompiledb.core.EnvPath#/PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.io/-path-mapper/is-absolute.html
@@ -65,6 +68,7 @@ $dokka.location:com.saveourtool.kompiledb.core.io/PathMapperScope/name/com.saveo
 $dokka.location:com.saveourtool.kompiledb.core.io/PathMapperScope/pathMapper/#/PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.io/-path-mapper-scope/path-mapper.html
 $dokka.location:com.saveourtool.kompiledb.core.io/PathMapperScope/resolve/com.saveourtool.kompiledb.core.EnvPath#com.saveourtool.kompiledb.core.EnvPath/PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.io/-path-mapper-scope/resolve.html
 $dokka.location:com.saveourtool.kompiledb.core.io/PathMapperScope/resolve/java.nio.file.Path#com.saveourtool.kompiledb.core.EnvPath/PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.io/-path-mapper-scope/resolve.html
+$dokka.location:com.saveourtool.kompiledb.core.io/RawCommandLine///PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.io/-raw-command-line/index.html
 $dokka.location:com.saveourtool.kompiledb.core.lang////PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.lang/index.html
 $dokka.location:com.saveourtool.kompiledb.core.lang/C///PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.lang/-c/index.html
 $dokka.location:com.saveourtool.kompiledb.core.lang/C/name/#/PointingToDeclaration/kompiledb-core/com.saveourtool.kompiledb.core.lang/-c/name.html
